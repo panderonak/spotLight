@@ -1,1 +1,1 @@
-export const DB_NAME = "spotLight";
+export const DB_NAME = 'spotLight';
