@@ -6,12 +6,11 @@ import {
   validateUsername,
 } from '../utils/validation.js';
 import User from '../models/user.models.js';
-import { create } from 'domain';
 import uploadOnCloudinary from '../utils/cloudinary.js';
 import APIResponse from '../utils/APIResponse.js';
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, fullname, password } = req.body;
+  let { username, email, fullname, password } = req.body;
   console.log(req.body);
 
   username = username.trim().replace(/\s+/g, '').toLowerCase();
@@ -44,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  const existingUser = User.findOne({
+  const existingUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -52,9 +51,21 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existingUser) throw new APIError(409, 'User already exists.');
 
   console.log(req.files);
-  const tempAvatarPath = req.files?.avatar[0]?.path;
+  let tempAvatarPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.avatar) &&
+    req.files.avatar.length > 0
+  )
+    tempAvatarPath = req.files?.avatar[0]?.path;
 
-  const tempCoverImagePath = req.files?.coverImage[0]?.path;
+  let tempCoverImagePath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  )
+    tempCoverImagePath = req.files?.coverImage[0]?.path;
 
   if (!tempAvatarPath)
     throw new APIError(400, 'Please upload an avatar image.');
@@ -86,8 +97,8 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(
       new APIResponse(
         200,
-        'Your account has been created successfully.',
-        createdUser
+        createdUser,
+        'Your account has been created successfully.'
       )
     );
 });
