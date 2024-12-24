@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 const userSchema = new Schema(
   {
-    userName: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -19,7 +19,7 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    fullName: {
+    fullname: {
       type: String,
       required: true,
       trim: true,
@@ -49,10 +49,10 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-userSchema.pre('save', function async(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
@@ -65,8 +65,8 @@ userSchema.methods.generateAccessToken = function () {
     {
       _id: this._id,
       email: this.email,
-      userName: this.userName,
-      fullName: this.userName,
+      username: this.username,
+      fullname: this.fullname,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -87,4 +87,6 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const User = model('User', userSchema);
+const User = model('User', userSchema);
+
+export default User;
