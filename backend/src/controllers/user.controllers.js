@@ -9,6 +9,7 @@ import User from '../models/user.models.js';
 import uploadOnCloudinary from '../utils/cloudinary.js';
 import APIResponse from '../utils/APIResponse.js';
 import generateAuthTokens from '../utils/token.js';
+import jwt from 'jsonwebtoken';
 
 const registerUser = asyncHandler(async (req, res) => {
   let { username, email, fullname, password } = req.body;
@@ -169,4 +170,59 @@ const logOutUser = asyncHandler(async (req, res) => {
     .json(new APIResponse(200, {}, 'You have been logged out successfully.'));
 });
 
-export { registerUser, loginUser, logOutUser };
+const renewAccessToken = asyncHandler(async (req, res) => {
+  const receivedRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!receivedRefreshToken)
+    throw new APIError(401, 'Unauthorized: No valid refresh token provided.');
+
+  try {
+    const decodedRefreshToken = jwt.verify(
+      receivedRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    const refreshTokenUser = await User.findById(decodedRefreshToken?._id);
+
+    if (!refreshTokenUser)
+      throw new APIError(
+        401,
+        'Invalid or expired refresh token. Unable to find associated user.'
+      );
+
+    if (receivedRefreshToken !== refreshTokenUser?.refreshToken)
+      throw new APIError(
+        401,
+        'Invalid or expired refresh token. Please log in again.'
+      );
+
+    const { generatedAccessToken, generatedRefreshToken, userDetails } =
+      await generateAuthTokens(refreshTokenUser._id);
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie('accessToken', generatedAccessToken, options)
+      .cookie('refreshToken', generatedRefreshToken, options)
+      .json(
+        new APIResponse(
+          200,
+          { generatedAccessToken, generatedRefreshToken },
+          'Successfully refreshed your access and refresh tokens. You can continue your session.'
+        )
+      );
+  } catch (error) {
+    throw new APIError(
+      401,
+      error?.message ||
+        'Unable to refresh token: The provided refresh token is invalid.'
+    );
+  }
+});
+
+export { registerUser, loginUser, logOutUser, renewAccessToken };
