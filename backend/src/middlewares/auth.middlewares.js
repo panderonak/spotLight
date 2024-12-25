@@ -10,7 +10,10 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
       req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token)
-      throw APIError(401, 'Unauthorized access. Please provide a valid token.');
+      throw new APIError(
+        401,
+        'Unauthorized access. Please provide a valid token.'
+      );
 
     const decodedUserInfo = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 

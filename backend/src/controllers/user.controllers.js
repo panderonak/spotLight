@@ -107,7 +107,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
-  if (!username || !email)
+  if (!(username || email))
     throw new APIError(400, 'Either username or email is required.');
   if (!password) throw new APIError(400, 'Password is required.');
 
@@ -123,11 +123,8 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!isPasswordValid)
     throw new APIError(401, 'Invalid credentials. Please try again.');
 
-  const { accessToken, refreshToken, updatedUser } = await generateAuthTokens(
-    foundUser._id
-  );
-
-  const userDetails = updatedUser.select('-password -refreshToken');
+  const { generatedAccessToken, generatedRefreshToken, userDetails } =
+    await generateAuthTokens(foundUser._id);
 
   const options = {
     httpOnly: true,
@@ -136,12 +133,16 @@ const loginUser = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .cookie('accessToken', accessToken, options)
-    .cookie('refreshToken', refreshToken, options)
+    .cookie('accessToken', generatedAccessToken, options)
+    .cookie('refreshToken', generatedRefreshToken, options)
     .json(
       new APIResponse(
         200,
-        { user: userDetails, accessToken, refreshToken },
+        {
+          user: userDetails,
+          accessToken: generatedAccessToken,
+          refreshToken: generatedRefreshToken,
+        },
         'Welcome back! You have logged in successfully.'
       )
     );

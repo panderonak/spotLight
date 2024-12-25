@@ -5,15 +5,17 @@ const generateAuthTokens = async (userId) => {
   try {
     const foundUser = await User.findById(userId);
 
-    const accessToken = foundUser.generateAccessToken();
+    const generatedAccessToken = foundUser.generateAccessToken();
 
-    const refreshToken = foundUser.generateRefreshToken();
+    const generatedRefreshToken = foundUser.generateRefreshToken();
 
-    foundUser.refreshToken = refreshToken;
+    foundUser.refreshToken = generatedRefreshToken;
 
     const updatedUser = await foundUser.save({ validateBeforeSave: false });
 
-    return { accessToken, refreshToken, updatedUser };
+    const { password, refreshToken, ...userDetails } = updatedUser._doc;
+
+    return { generatedAccessToken, generatedRefreshToken, userDetails };
   } catch (error) {
     throw new APIError(
       500,
