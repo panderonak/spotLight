@@ -8,6 +8,7 @@ import {
 import User from '../models/user.models.js';
 import uploadOnCloudinary from '../utils/cloudinary.js';
 import APIResponse from '../utils/APIResponse.js';
+import generateAuthTokens from '../utils/token.js';
 
 const registerUser = asyncHandler(async (req, res) => {
   let { username, email, fullname, password } = req.body;
@@ -103,4 +104,68 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-export default registerUser;
+const loginUser = asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!username || !email)
+    throw new APIError(400, 'Either username or email is required.');
+  if (!password) throw new APIError(400, 'Password is required.');
+
+  const foundUser = await User.findOne({
+    $or: [{ username }, { email }],
+  });
+
+  if (!foundUser)
+    throw new APIError(404, 'No user found with the provided details.');
+
+  const isPasswordValid = await foundUser.isPasswordCorrect(password);
+
+  if (!isPasswordValid)
+    throw new APIError(401, 'Invalid credentials. Please try again.');
+
+  const { accessToken, refreshToken, updatedUser } = await generateAuthTokens(
+    foundUser._id
+  );
+
+  const userDetails = updatedUser.select('-password -refreshToken');
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .cookie('accessToken', accessToken, options)
+    .cookie('refreshToken', refreshToken, options)
+    .json(
+      new APIResponse(
+        200,
+        { user: userDetails, accessToken, refreshToken },
+        'Welcome back! You have logged in successfully.'
+      )
+    );
+});
+
+const logOutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: { refreshToken: undefined },
+    },
+    { new: true }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie('accessToken', options)
+    .clearCookie('refreshToken', options)
+    .json(new APIResponse(200, {}, 'You have been logged out successfully.'));
+});
+
+export { registerUser, loginUser, logOutUser };
