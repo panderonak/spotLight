@@ -21,6 +21,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   password = password.trim();
 
+  fullname = fullname.trim();
+
   if (
     [username, email, fullname, password].some((field) => field?.trim() === '')
   ) {
@@ -197,7 +199,7 @@ const renewAccessToken = asyncHandler(async (req, res) => {
         'Invalid or expired refresh token. Please log in again.'
       );
 
-    const { generatedAccessToken, generatedRefreshToken, userDetails } =
+    const { generatedAccessToken, generatedRefreshToken } =
       await generateAuthTokens(refreshTokenUser._id);
 
     const options = {
@@ -212,7 +214,10 @@ const renewAccessToken = asyncHandler(async (req, res) => {
       .json(
         new APIResponse(
           200,
-          { generatedAccessToken, generatedRefreshToken },
+          {
+            generatedAccessToken,
+            generatedRefreshToken,
+          },
           'Successfully refreshed your access and refresh tokens. You can continue your session.'
         )
       );
@@ -225,4 +230,160 @@ const renewAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser, logOutUser, renewAccessToken };
+const updateUserPassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+  if (newPassword !== confirmNewPassword)
+    throw new APIError(400, 'New password and confirmation do not match.');
+
+  const currentUser = await User.findById(req.user?._id);
+
+  const isCurrentPasswordValid =
+    await currentUser.isPasswordCorrect(currentPassword);
+
+  if (!isCurrentPasswordValid)
+    throw new APIError(400, 'The current password you entered is incorrect.');
+
+  currentUser.password = newPassword;
+
+  await currentUser.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(
+      new APIResponse(200, {}, 'Your password has been changed successfully.')
+    );
+});
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+  return res
+    .status(200)
+    .json(
+      new APIResponse(
+        200,
+        req.user,
+        'Current user information retrieved successfully.'
+      )
+    );
+});
+
+const updateUserProfile = asyncHandler(async (req, res) => {
+  let { email, fullname } = req.body;
+
+  email = email.trim();
+
+  fullname = fullname.trim();
+
+  if (!validateEmail(email.trim())) {
+    throw new APIError(400, 'Invalid email format.');
+  }
+
+  if (!fullname && !email)
+    throw new APIError(
+      400,
+      'Please provide at least one value: full name or email.'
+    );
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        fullname: fullname ? fullname : req.user?.fullname,
+        email: email ? email : req.user?.email,
+      },
+    },
+    { new: true }
+  ).select('-password');
+
+  return res
+    .status(200)
+    .json(
+      new APIResponse(
+        200,
+        { user: updatedUser },
+        'Your account details have been successfully updated.'
+      )
+    );
+});
+
+const updateAvatar = asyncHandler(async (req, res) => {
+  const tempAvatarPath = req.file?.path;
+
+  if (!tempAvatarPath)
+    throw new APIError(
+      400,
+      'Avatar image is required. Please upload a valid file.'
+    );
+
+  const avatar = await uploadOnCloudinary(tempAvatarPath);
+
+  if (!avatar.url)
+    throw new APIError(400, 'Avatar upload failed. Please try again.');
+
+  await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        avatar: avatar.url,
+      },
+    },
+    { new: true }
+  ).select('-password');
+
+  res
+    .status(200)
+    .json(
+      new APIResponse(
+        200,
+        { user: updatedUser },
+        'Your avatar image has been updated successfully.'
+      )
+    );
+});
+
+const updateCoverImage = asyncHandler(async (req, res) => {
+  const tempCoverImagePath = req.file?.path;
+
+  if (!tempCoverImagePath)
+    throw new APIError(
+      400,
+      'Cover Image is required. Please upload a valid file.'
+    );
+
+  const coverImage = await uploadOnCloudinary(tempCoverImagePath);
+
+  if (!coverImage.url)
+    throw new APIError(400, 'Cover Image upload failed. Please try again.');
+
+  await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        coverImage: coverImage.url,
+      },
+    },
+    { new: true }
+  ).select('-password');
+
+  res
+    .status(200)
+    .json(
+      new APIResponse(
+        200,
+        { user: updatedUser },
+        'Your cover image has been updated successfully.'
+      )
+    );
+});
+
+export {
+  registerUser,
+  loginUser,
+  logOutUser,
+  renewAccessToken,
+  updateUserPassword,
+  getCurrentUser,
+  updateUserProfile,
+  updateAvatar,
+  updateCoverImage,
+};
