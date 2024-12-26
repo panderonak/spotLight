@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
+import APIError from '../utils/APIError.js';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -25,4 +26,31 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-export default uploadOnCloudinary;
+const deleteFromCloudinary = async (imageURL) => {
+  try {
+    if (!imageURL) return null;
+
+    const extractPublicId = (url) => {
+      const regex =
+        /\/v\d+\/(.*)\.(jpg|jpeg|png|gif|webp|bmp|tiff|pdf|mp4|mov)/;
+      const match = url.match(regex);
+      console.log(match);
+      return match ? match[1] : null;
+    };
+
+    const publicID = extractPublicId(imageURL);
+
+    if (!publicID)
+      throw new APIError(400, 'Invalid Cloudinary URL or public ID not found.');
+
+    const response = await cloudinary.uploader.destroy(publicID);
+    console.log('Image deleted successfully.');
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log('Failed to delete the image.');
+    return null;
+  }
+};
+
+export { uploadOnCloudinary, deleteFromCloudinary };

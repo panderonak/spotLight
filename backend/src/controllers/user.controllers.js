@@ -6,7 +6,10 @@ import {
   validateUsername,
 } from '../utils/validation.js';
 import User from '../models/user.models.js';
-import uploadOnCloudinary from '../utils/cloudinary.js';
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from '../utils/cloudinary.js';
 import APIResponse from '../utils/APIResponse.js';
 import generateAuthTokens from '../utils/token.js';
 import jwt from 'jsonwebtoken';
@@ -26,7 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (
     [username, email, fullname, password].some((field) => field?.trim() === '')
   ) {
-    throw new APIError(400, 'Please fill in all the required fields.');
+    throw new APIError(400, 'All required fields must be completed.');
   }
 
   if (!validateEmail(email.trim())) {
@@ -261,7 +264,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(
       new APIResponse(
         200,
-        req.user,
+        { user: req.user },
         'Current user information retrieved successfully.'
       )
     );
@@ -274,22 +277,20 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
   fullname = fullname.trim();
 
+  if (!fullname || !email) {
+    throw new APIError(400, 'All required fields must be filled.');
+  }
+
   if (!validateEmail(email.trim())) {
     throw new APIError(400, 'Invalid email format.');
   }
-
-  if (!fullname && !email)
-    throw new APIError(
-      400,
-      'Please provide at least one value: full name or email.'
-    );
 
   const updatedUser = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
-        fullname: fullname ? fullname : req.user?.fullname,
-        email: email ? email : req.user?.email,
+        fullname,
+        email,
       },
     },
     { new: true }
@@ -320,7 +321,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
   if (!avatar.url)
     throw new APIError(400, 'Avatar upload failed. Please try again.');
 
-  await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
@@ -330,7 +331,10 @@ const updateAvatar = asyncHandler(async (req, res) => {
     { new: true }
   ).select('-password');
 
-  res
+  const avatarDeletionResult = await deleteFromCloudinary(req.user.avatar);
+  console.log(avatarDeletionResult);
+
+  await res
     .status(200)
     .json(
       new APIResponse(
@@ -355,7 +359,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
   if (!coverImage.url)
     throw new APIError(400, 'Cover Image upload failed. Please try again.');
 
-  await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
@@ -364,6 +368,10 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     },
     { new: true }
   ).select('-password');
+
+  const coverImageDeletionResult = await deleteFromCloudinary(
+    req.user.coverImage
+  );
 
   res
     .status(200)

@@ -37,9 +37,9 @@ router.route('/refresh-token').post(renewAccessToken);
 
 router.route('/update-password').post(verifyJWT, updateUserPassword);
 
-router.route('/current-user').get(getCurrentUser);
+router.route('/current-user').get(verifyJWT, getCurrentUser);
 
-router.route('/update-user').post(verifyJWT, updateUserProfile);
+router.route('/update-user').patch(verifyJWT, updateUserProfile);
 
 router
   .route('/update-avatar')
@@ -47,6 +47,6 @@ router
 
 router
   .route('/update-cover')
-  .post(upload.single('coverImage'), updateCoverImage);
+  .post(verifyJWT, upload.single('coverImage'), updateCoverImage);
 
 export default router;
