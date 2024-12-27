@@ -9,6 +9,7 @@ import {
   updateUserProfile,
   updateAvatar,
   updateCoverImage,
+  fetchUserChannelProfile,
 } from '../controllers/user.controllers.js';
 import upload from '../middlewares/multer.middlewares.js';
 import verifyJWT from '../middlewares/auth.middlewares.js';
@@ -48,5 +49,7 @@ router
 router
   .route('/update-cover')
   .post(verifyJWT, upload.single('coverImage'), updateCoverImage);
+
+router.route('/c/:username').get(verifyJWT, fetchUserChannelProfile);
 
 export default router;

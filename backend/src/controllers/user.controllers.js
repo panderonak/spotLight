@@ -384,6 +384,85 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     );
 });
 
+const fetchUserChannelProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new APIError(400, 'Please provide a valid username.');
+  }
+
+  const channelDetails = await User.aggregate([
+    {
+      $match: {
+        username: channelName?.toLowerCase(),
+      },
+    },
+    {
+      $lookup: {
+        from: 'subscriptions',
+        localField: '_id',
+        foreignField: 'channel',
+        as: 'subscribers',
+      },
+    },
+    {
+      $lookup: {
+        from: 'subscriptions',
+        localField: '_id',
+        foreignField: 'subscriber',
+        as: 'subscriptions',
+      },
+    },
+    {
+      $addFields: {
+        subscribersCount: {
+          $size: '$subscribers',
+        },
+        subscriptionsCount: {
+          $size: '$subscriptions',
+        },
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req.user?._id, '$subscribers.subscriber'] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        createdAt: 1,
+        subscribersCount: 1,
+        subscriptionsCount: 1,
+        isSubscribed: 1,
+      },
+    },
+  ]);
+
+  console.log(channelDetails);
+
+  if (!channelDetails?.length)
+    throw new APIError(
+      404,
+      'Channel not found. It may have been deleted or the identifier is incorrect.'
+    );
+
+  res
+    .status(200)
+    .json(
+      new APIResponse(
+        200,
+        channelDetails[0],
+        'Channel details retrieved successfully.'
+      )
+    );
+});
+
 export {
   registerUser,
   loginUser,
@@ -394,4 +473,5 @@ export {
   updateUserProfile,
   updateAvatar,
   updateCoverImage,
+  fetchUserChannelProfile,
 };
