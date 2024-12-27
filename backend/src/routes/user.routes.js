@@ -44,12 +44,12 @@ router.route('/update-user').patch(verifyJWT, updateUserProfile);
 
 router
   .route('/update-avatar')
-  .post(verifyJWT, upload.single('avatar'), updateAvatar);
+  .patch(verifyJWT, upload.single('avatar'), updateAvatar);
 
 router
   .route('/update-cover')
-  .post(verifyJWT, upload.single('coverImage'), updateCoverImage);
+  .patch(verifyJWT, upload.single('coverImage'), updateCoverImage);
 
-router.route('/c/:username').get(verifyJWT, fetchUserChannelProfile);
+router.route('/channel/:username').get(verifyJWT, fetchUserChannelProfile);
 
 export default router;
