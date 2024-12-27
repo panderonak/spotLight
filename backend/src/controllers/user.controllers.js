@@ -13,6 +13,7 @@ import {
 import APIResponse from '../utils/APIResponse.js';
 import generateAuthTokens from '../utils/token.js';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 const registerUser = asyncHandler(async (req, res) => {
   let { username, email, fullname, password } = req.body;
@@ -463,6 +464,84 @@ const fetchUserChannelProfile = asyncHandler(async (req, res) => {
     );
 });
 
+const getWatchHistory = asyncHandler(async (req, res) => {
+  try {
+    const userDetails = await User.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(req.user_id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'videos',
+          localField: 'watchHistory',
+          foreignField: '_id',
+          as: 'watchHistory',
+          pipeline: [
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'owner',
+                foreignField: '_id',
+                as: 'owner',
+                pipeline: [
+                  {
+                    $project: {
+                      username: 1,
+                      avatar: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                owner: {
+                  $first: '$owner',
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    console.log('userDetails', userDetails);
+
+    if (userDetails.length === 0 || !userDetails[0].watchHistory.length)
+      return res
+        .status(200)
+        .json(
+          new APIResponse(
+            200,
+            {},
+            "You haven't watched anything yet. Explore content to start building your watch history."
+          )
+        );
+
+    return res
+      .status(200)
+      .json(
+        new APIResponse(
+          200,
+          userDetails?.[0].watchHistory,
+          "The user\'s watch history has been successfully retrieved."
+        )
+      );
+  } catch (error) {
+    return res
+      .status(500)
+      .json(
+        new APIResponse(
+          500,
+          {},
+          'An error occurred while fetching your watch history.'
+        )
+      );
+  }
+});
+
 export {
   registerUser,
   loginUser,
@@ -474,4 +553,5 @@ export {
   updateAvatar,
   updateCoverImage,
   fetchUserChannelProfile,
+  getWatchHistory,
 };
