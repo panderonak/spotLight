@@ -20,9 +20,13 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 
-import router from './routes/user.routes.js';
+import userRouter from './routes/user.routes.js';
 
-app.use('/api/v1/users', router);
+app.use('/api/v1/users', userRouter);
+
+import commentRouter from './routes/comment.routes.js';
+
+app.use('/api/v1/comments', commentRouter);
 
 export default app;
 
