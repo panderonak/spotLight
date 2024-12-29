@@ -26,9 +26,9 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-const deleteFromCloudinary = async (imageURL) => {
+const deleteFromCloudinary = async (url) => {
   try {
-    if (!imageURL) return null;
+    if (!url) return null;
 
     const extractPublicId = (url) => {
       const regex =
@@ -38,17 +38,17 @@ const deleteFromCloudinary = async (imageURL) => {
       return match ? match[1] : null;
     };
 
-    const publicID = extractPublicId(imageURL);
+    const publicID = extractPublicId(url);
 
     if (!publicID)
       throw new APIError(400, 'Invalid Cloudinary URL or public ID not found.');
 
     const response = await cloudinary.uploader.destroy(publicID);
-    console.log('Image deleted successfully.');
-    console.log(response);
     return response;
   } catch (error) {
-    console.log('Failed to delete the image.');
+    console.log(
+      'An unexpected error occurred while deleting the file. Please try again later.'
+    );
     return null;
   }
 };
