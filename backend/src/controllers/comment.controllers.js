@@ -61,15 +61,25 @@ const editComment = asyncHandler(async (req, res) => {
     const existingComment = await Comment.findById(commentId);
 
     if (!existingComment) {
+      throw new APIError(
+        400,
+        'Comment not found. Please ensure the comment ID is correct.'
+      );
     }
     existingComment.content = updatedComment;
 
-    await existingComment.save({ validateBeforeSave: false });
+    const updatedCommentDetails = await existingComment.save({
+      validateBeforeSave: false,
+    });
 
     return res
       .status(200)
       .json(
-        new APIResponse(200, {}, 'The comment has been updated successfully.')
+        new APIResponse(
+          200,
+          updatedCommentDetails,
+          'The comment has been updated successfully.'
+        )
       );
   } catch (error) {
     throw new APIError(
@@ -101,11 +111,7 @@ const deleteComment = asyncHandler(async (req, res) => {
     res
       .status(200)
       .json(
-        new APIResponse(
-          200,
-          { comment: deletedComment },
-          'Comment deleted successfully'
-        )
+        new APIResponse(200, deletedComment, 'Comment deleted successfully')
       );
   } catch (error) {
     throw new APIError(500, error?.message || 'Unable to delete the comment.');
@@ -116,10 +122,13 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const { page = 1, limit = 10 } = req.query;
 
-  if (!videoId?.trim())
-    throw new APIError(400, 'Video ID is missing. Please provide a valid ID.');
-
   try {
+    if (!videoId?.trim())
+      throw new APIError(
+        400,
+        'Video ID is missing. Please provide a valid ID.'
+      );
+
     const videoCommentsAggregationPipeline = [
       {
         $match: {
@@ -139,14 +148,14 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
                 avatar: 1,
               },
             },
-            {
-              $addFields: {
-                owner: {
-                  $first: '$owner ',
-                },
-              },
-            },
           ],
+        },
+      },
+      {
+        $addFields: {
+          owner: {
+            $first: '$owner',
+          },
         },
       },
     ];
