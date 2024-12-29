@@ -100,7 +100,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!createdUser)
     throw new APIError(500, 'User registration failed. Please try again.');
 
-  res
+  return res
     .status(201)
     .json(
       new APIResponse(
@@ -341,7 +341,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
   const avatarDeletionResult = await deleteFromCloudinary(req.user.avatar);
   console.log(avatarDeletionResult);
 
-  await res
+  return res
     .status(200)
     .json(
       new APIResponse(
@@ -379,8 +379,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
   const coverImageDeletionResult = await deleteFromCloudinary(
     req.user.coverImage
   );
-
-  res
+  return res
     .status(200)
     .json(
       new APIResponse(
@@ -458,8 +457,7 @@ const fetchUserChannelProfile = asyncHandler(async (req, res) => {
       404,
       'Channel not found. It may have been deleted or the identifier is incorrect.'
     );
-
-  res
+  return res
     .status(200)
     .json(
       new APIResponse(

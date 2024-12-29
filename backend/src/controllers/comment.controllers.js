@@ -25,8 +25,7 @@ const postComment = asyncHandler(async (req, res) => {
     });
 
     console.log(newComment);
-
-    res
+    return res
       .status(200)
       .json(
         new APIResponse(
@@ -107,8 +106,7 @@ const deleteComment = asyncHandler(async (req, res) => {
         400,
         'The comment you are trying to delete could not be found.'
       );
-
-    res
+    return res
       .status(200)
       .json(
         new APIResponse(200, deletedComment, 'Comment deleted successfully')
