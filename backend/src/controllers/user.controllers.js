@@ -156,13 +156,13 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logOutUser = asyncHandler(async (req, res) => {
-  await User.findByIdAndUpdate(
+  const userLoggedOut = await User.findByIdAndUpdate(
     req.user._id,
     {
       $unset: { refreshToken: 1 },
     },
     { new: true }
-  );
+  ).select('username');
 
   const options = {
     httpOnly: true,
@@ -173,7 +173,13 @@ const logOutUser = asyncHandler(async (req, res) => {
     .status(200)
     .clearCookie('accessToken', options)
     .clearCookie('refreshToken', options)
-    .json(new APIResponse(200, {}, 'You have been logged out successfully.'));
+    .json(
+      new APIResponse(
+        200,
+        userLoggedOut,
+        'You have been logged out successfully.'
+      )
+    );
 });
 
 const renewAccessToken = asyncHandler(async (req, res) => {
