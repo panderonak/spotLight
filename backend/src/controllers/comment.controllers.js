@@ -3,6 +3,7 @@ import { Comment } from '../models/comment.models.js';
 import APIError from '../utils/APIError.js';
 import APIResponse from '../utils/APIResponse.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { Like } from '../models/like.models.js';
 
 const postComment = asyncHandler(async (req, res) => {
   const { content } = req.body;
@@ -106,6 +107,11 @@ const deleteComment = asyncHandler(async (req, res) => {
         400,
         'The comment you are trying to delete could not be found.'
       );
+
+    const deletedLike = await Like.findOneAndDelete({ comment: commentId });
+
+    console.log(deletedLike);
+
     return res
       .status(200)
       .json(
@@ -150,10 +156,33 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'comment',
+          as: 'likes',
+        },
+      },
+      {
         $addFields: {
           owner: {
             $first: '$owner',
           },
+          totalLikes: {
+            $size: '$likes',
+          },
+          likedByUser: {
+            $cond: {
+              if: { $in: [req.user?._id, '$likes.likedBy'] },
+              then: true,
+              else: false,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
     ];
