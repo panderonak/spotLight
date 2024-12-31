@@ -24,10 +24,20 @@ import userRouter from './routes/user.routes.js';
 
 app.use('/api/v1/users', userRouter);
 
+import videoRouter from './routes/video.routes.js';
+
+app.use('/api/v1/videos', videoRouter);
+
 import commentRouter from './routes/comment.routes.js';
 
 app.use('/api/v1/comments', commentRouter);
 
-export default app;
+import playlistRouter from './routes/playlist.routes.js';
 
-// http://localhost:8000/api/v1/users/register
+app.use('/api/v1/playlist', playlistRouter);
+
+import likeRouter from './routes/like.routes.js';
+
+app.use('/api/v1/likes', likeRouter);
+
+export default app;
