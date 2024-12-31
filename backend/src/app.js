@@ -40,4 +40,8 @@ import likeRouter from './routes/like.routes.js';
 
 app.use('/api/v1/likes', likeRouter);
 
+import subscriptionRouter from './routes/subscription.routes.js';
+
+app.use('/api/v1/subscriptions', subscriptionRouter);
+
 export default app;
