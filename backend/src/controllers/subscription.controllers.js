@@ -204,7 +204,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
       limit: 10,
     };
 
-    const paginatedSubscriptions = await Subscription.aggregate(
+    const paginatedSubscriptions = await Subscription.aggregatePaginate(
       subscribedChannelsAggregationPipeline,
       options
     );

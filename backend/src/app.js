@@ -44,4 +44,8 @@ import subscriptionRouter from './routes/subscription.routes.js';
 
 app.use('/api/v1/subscriptions', subscriptionRouter);
 
+import postRouter from './routes/post.routes.js';
+
+app.use('/api/v1/posts', postRouter);
+
 export default app;
