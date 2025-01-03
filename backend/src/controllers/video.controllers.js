@@ -125,9 +125,35 @@ const getVideoById = asyncHandler(async (req, res) => {
           as: 'owner',
           pipeline: [
             {
+              $lookup: {
+                from: 'subscriptions',
+                localField: '_id',
+                foreignField: 'channel',
+                as: 'subscribers',
+              },
+            },
+            {
+              $addFields: {
+                subscribers: {
+                  $size: '$subscribers',
+                },
+                isSubscribed: {
+                  $cond: {
+                    if: {
+                      $in: [req.user?._id, '$subscribers.subscriber'],
+                    },
+                    then: true,
+                    else: false,
+                  },
+                },
+              },
+            },
+            {
               $project: {
                 username: 1,
                 avatar: 1,
+                subscribers: 1,
+                isSubscribed: 1,
               },
             },
           ],
@@ -142,14 +168,6 @@ const getVideoById = asyncHandler(async (req, res) => {
         },
       },
       {
-        $lookup: {
-          from: 'subscriptions',
-          localField: '_id',
-          foreignField: 'channel',
-          as: 'subscribers',
-        },
-      },
-      {
         $addFields: {
           owner: {
             $first: '$owner',
@@ -160,18 +178,6 @@ const getVideoById = asyncHandler(async (req, res) => {
           likedByCurrentUser: {
             $cond: {
               if: { $in: [req.user?._id, '$likes.likedBy'] },
-              then: true,
-              else: false,
-            },
-          },
-          subscribers: {
-            $size: '$subscribers',
-          },
-          isSubscribed: {
-            $cond: {
-              if: {
-                $in: [req.user?._id, '$subscribers.subscriber'],
-              },
               then: true,
               else: false,
             },
@@ -191,7 +197,6 @@ const getVideoById = asyncHandler(async (req, res) => {
           likes: 1,
           subscribers: 1,
           likedByCurrentUser: 1,
-          isSubscribed: 1,
         },
       },
     ]);
