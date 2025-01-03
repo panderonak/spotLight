@@ -168,7 +168,7 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
           owner: {
             $first: '$owner',
           },
-          totalLikes: {
+          likes: {
             $size: '$likes',
           },
           likedByUser: {
@@ -185,6 +185,16 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
           createdAt: -1,
         },
       },
+      {
+        $project: {
+          video: 1,
+          content: 1,
+          owner: 1,
+          createdAt: 1,
+          likes: 1,
+          likedByUser: 1,
+        },
+      },
     ];
 
     const paginatedVideoComments = await Comment.aggregatePaginate(
@@ -192,7 +202,7 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
       { page, limit }
     );
 
-    if (paginatedVideoComments.length === 0)
+    if (paginatedVideoComments.docs.length === 0)
       return res
         .status(200)
         .json(
@@ -206,7 +216,7 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
       .json(
         new APIResponse(
           200,
-          paginatedVideoComments,
+          paginatedVideoComments.docs,
           'The comments for this video have been successfully retrieved.'
         )
       );
