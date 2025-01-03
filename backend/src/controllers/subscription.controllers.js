@@ -1,5 +1,4 @@
 import mongoose, { isValidObjectId } from 'mongoose';
-import User from '../models/user.models.js';
 import { Subscription } from '../models/subscription.models.js';
 import APIError from '../utils/APIError.js';
 import APIResponse from '../utils/APIResponse.js';
@@ -225,7 +224,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
       .json(
         new APIResponse(
           200,
-          paginatedSubscriptions,
+          paginatedSubscriptions.docs,
           "Successfully fetched the channel 's subscriptions."
         )
       );
