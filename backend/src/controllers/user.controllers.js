@@ -473,7 +473,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     const userDetails = await User.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(req.user_id),
+          _id: new mongoose.Types.ObjectId(req.user._id),
         },
       },
       {
@@ -506,6 +506,17 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                 },
               },
             },
+            {
+              $project: {
+                videoFile: 1,
+                thumbnail: 1,
+                title: 1,
+                description: 1,
+                duration: 1,
+                views: 1,
+                owner: 1,
+              },
+            },
           ],
         },
       },
@@ -515,10 +526,10 @@ const getWatchHistory = asyncHandler(async (req, res) => {
 
     if (userDetails.length === 0 || !userDetails[0].watchHistory.length)
       return res
-        .status(200)
+        .status(204)
         .json(
           new APIResponse(
-            200,
+            204,
             {},
             "You haven't watched anything yet. Explore content to start building your watch history."
           )
