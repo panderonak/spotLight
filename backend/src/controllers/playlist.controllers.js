@@ -104,11 +104,35 @@ const fetchUserPlaylist = asyncHandler(async (req, res) => {
           $size: '$videos',
         },
         viewsCount: {
-          $sum: '$video.views',
+          $sum: '$videos.views',
+        },
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        description: 1,
+        videos: 1,
+        owner: 1,
+        createdAt: 1,
+        videosCount: 1,
+        viewsCount: 1,
+        videos: {
+          _id: 1,
+          videoFile: 1,
+          thumbnail: 1,
+          title: 1,
+          description: 1,
+          duration: 1,
+          views: 1,
+          owner: 1,
+          createdAt: 1,
         },
       },
     },
   ]);
+
+  console.log('userPlaylists', userPlaylists);
 
   if (!userPlaylists)
     throw new APIError(
@@ -117,10 +141,15 @@ const fetchUserPlaylist = asyncHandler(async (req, res) => {
     );
 
   if (userPlaylists.length === 0)
-    throw new APIResponse(
-      400,
-      "You don't have any playlists yet. Create one to get started!"
-    );
+    return res
+      .status(204)
+      .json(
+        new APIResponse(
+          204,
+          {},
+          "You don't have any playlists yet. Create one to get started!"
+        )
+      );
 
   return res
     .status(200)
@@ -189,7 +218,29 @@ const fetchPlaylistById = asyncHandler(async (req, res) => {
           $size: '$videos',
         },
         viewsCount: {
-          $sum: '$video.views',
+          $sum: '$videos.views',
+        },
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        description: 1,
+        videos: 1,
+        owner: 1,
+        createdAt: 1,
+        videosCount: 1,
+        viewsCount: 1,
+        videos: {
+          _id: 1,
+          videoFile: 1,
+          thumbnail: 1,
+          title: 1,
+          description: 1,
+          duration: 1,
+          views: 1,
+          owner: 1,
+          createdAt: 1,
         },
       },
     },
@@ -206,7 +257,7 @@ const fetchPlaylistById = asyncHandler(async (req, res) => {
     .json(
       new APIResponse(
         200,
-        playlist,
+        playlist[0],
         'Your playlist has been successfully retrieved.'
       )
     );
