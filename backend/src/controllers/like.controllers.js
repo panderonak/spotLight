@@ -7,56 +7,64 @@ import asyncHandler from '../utils/asyncHandler.js';
 const toggleVideoLikeStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
 
-  if (!isValidObjectId(videoId))
-    throw new APIError(400, 'The provided video ID is invalid or malformed.');
+  try {
+    if (!isValidObjectId(videoId))
+      throw new APIError(400, 'The provided video ID is invalid or malformed.');
 
-  const isLiked = await Like.findOne({
-    video: videoId,
-    likedBy: req.user?._id,
-  });
-
-  if (isLiked) {
-    const deletedLike = await Like.findOneAndDelete({
+    const isLiked = await Like.findOne({
       video: videoId,
       likedBy: req.user?._id,
     });
 
-    if (!deletedLike)
-      throw new APIError(
-        500,
-        'Failed to remove the like. Please try again later or contact support if the issue persists.'
-      );
+    if (isLiked) {
+      const deletedLike = await Like.findOneAndDelete({
+        video: videoId,
+        likedBy: req.user?._id,
+      });
 
-    return res
-      .status(200)
-      .json(
-        new APIResponse(
-          200,
-          deletedLike,
-          'You have successfully removed your like from this video.'
-        )
-      );
-  } else {
-    const addedLike = await Like.create({
-      video: videoId,
-      likedBy: req.user?._id,
-    });
+      if (!deletedLike)
+        throw new APIError(
+          500,
+          'Failed to remove the like. Please try again later or contact support if the issue persists.'
+        );
 
-    if (!addedLike)
-      throw new APIError(
-        500,
-        'Unable to add like at this moment. Please try again later, or contact support if the issue persists.'
-      );
+      return res
+        .status(200)
+        .json(
+          new APIResponse(
+            200,
+            deletedLike,
+            'You have successfully removed your like from this video.'
+          )
+        );
+    } else {
+      const addedLike = await Like.create({
+        video: videoId,
+        likedBy: req.user?._id,
+      });
 
-    return res
-      .status(200)
-      .json(
-        new APIResponse(
-          200,
-          addedLike,
-          'You have successfully liked this video.'
-        )
-      );
+      if (!addedLike)
+        throw new APIError(
+          500,
+          'Unable to add like at this moment. Please try again later, or contact support if the issue persists.'
+        );
+
+      return res
+        .status(200)
+        .json(
+          new APIResponse(
+            200,
+            addedLike,
+            'You have successfully liked this video.'
+          )
+        );
+    }
+  } catch (error) {
+    console.log(`VIDEO LIKE ERROR: ${error?.message}`);
+    throw new APIError(
+      500,
+      'Something went wrong while trying to like the video. Please try again later, or contact support if the issue persists.'
+    );
   }
 });
 
@@ -119,56 +127,64 @@ const toggleCommentLikeStatus = asyncHandler(async (req, res) => {
 const togglePostLikeStatus = asyncHandler(async (req, res) => {
   const { postId } = req.params;
 
-  if (!isValidObjectId(postId))
-    throw new APIError(400, 'The provided post Id is invalid or malformed.');
+  try {
+    if (!isValidObjectId(postId))
+      throw new APIError(400, 'The provided post Id is invalid or malformed.');
 
-  const isLiked = await Like.findOne({
-    post: postId,
-    likedBy: req.user?._id,
-  });
-
-  if (isLiked) {
-    const deletedLike = await Like.findOneAndDelete({
+    const isLiked = await Like.findOne({
       post: postId,
       likedBy: req.user?._id,
     });
 
-    if (!deletedLike)
-      throw new APIError(
-        500,
-        'Failed to remove the like. Please try again later or contact support if the issue persists.'
-      );
+    if (isLiked) {
+      const deletedLike = await Like.findOneAndDelete({
+        post: postId,
+        likedBy: req.user?._id,
+      });
 
-    return res
-      .status(200)
-      .json(
-        new APIResponse(
-          200,
-          deletedLike,
-          'You have successfully removed your like from this post.'
-        )
-      );
-  } else {
-    const addedLike = await Like.create({
-      post: postId,
-      likedBy: req.user?._id,
-    });
+      if (!deletedLike)
+        throw new APIError(
+          500,
+          'Failed to remove the like. Please try again later or contact support if the issue persists.'
+        );
 
-    if (!addedLike)
-      throw new APIError(
-        500,
-        'Unable to add like at this moment. Please try again later, or contact support if the issue persists.'
-      );
+      return res
+        .status(200)
+        .json(
+          new APIResponse(
+            200,
+            deletedLike,
+            'You have successfully removed your like from this post.'
+          )
+        );
+    } else {
+      const addedLike = await Like.create({
+        post: postId,
+        likedBy: req.user?._id,
+      });
 
-    return res
-      .status(200)
-      .json(
-        new APIResponse(
-          200,
-          addedLike,
-          'You have successfully liked this post.'
-        )
-      );
+      if (!addedLike)
+        throw new APIError(
+          500,
+          'Unable to add like at this moment. Please try again later, or contact support if the issue persists.'
+        );
+
+      return res
+        .status(200)
+        .json(
+          new APIResponse(
+            200,
+            addedLike,
+            'You have successfully liked this post.'
+          )
+        );
+    }
+  } catch (error) {
+    console.log(`POST LIKE ERROR: ${error?.message}`);
+    throw new APIError(
+      500,
+      'Something went wrong while trying to like the post. Please try again later, or contact support if the issue persists.'
+    );
   }
 });
 
@@ -280,7 +296,7 @@ const fetchLikedVideos = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error.message);
+    console.log(`LIKED VIDEOS ERROR: ${error?.message}`);
     throw new APIError(
       500,
       'An unexpected error occurred while retrieving the video. Please try again later.'

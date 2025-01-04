@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { isValidObjectId } from 'mongoose';
 import { Comment } from '../models/comment.models.js';
 import APIError from '../utils/APIError.js';
 import APIResponse from '../utils/APIResponse.js';
@@ -16,8 +16,8 @@ const postComment = asyncHandler(async (req, res) => {
         'Your comment cannot be empty. Please provide a valid comment.'
       );
 
-    if (!videoId?.trim())
-      throw new APIError(500, 'Unable to add comment. Video ID is missing.');
+    if (!isValidObjectId(videoId))
+      throw new APIError(500, 'The provided video ID is invalid or malformed.');
 
     const newComment = await Comment.create({
       content: content.trim(),
@@ -25,7 +25,6 @@ const postComment = asyncHandler(async (req, res) => {
       owner: req.user?._id,
     });
 
-    console.log(newComment);
     return res
       .status(200)
       .json(
@@ -36,10 +35,10 @@ const postComment = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
+    console.log(`POST COMMENT ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      error?.message ||
-        'An error occurred while posting your comments. Try again.'
+      'An error occurred while posting your comments. Try again.'
     );
   }
 });
@@ -49,8 +48,11 @@ const editComment = asyncHandler(async (req, res) => {
   const { updatedComment } = req.body;
 
   try {
-    if (!commentId?.trim())
-      throw new APIError(400, 'Unable to edit comment. Comment ID is missing.');
+    if (!isValidObjectId(commentId))
+      throw new APIError(
+        400,
+        'Unable to edit comment.The provided comment ID is invalid or malformed.'
+      );
 
     if (updatedComment?.trim() === '')
       throw new APIError(
@@ -82,10 +84,10 @@ const editComment = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
+    console.log(`EDIT COMMENT ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      error?.message ||
-        'An unexpected error occurred while trying to edit the comment. Please try again later.'
+      'An unexpected error occurred while trying to edit the comment. Please try again later.'
     );
   }
 });
@@ -94,10 +96,10 @@ const deleteComment = asyncHandler(async (req, res) => {
   const { commentId } = req.params;
 
   try {
-    if (!commentId || commentId.trim() === '')
+    if (!isValidObjectId(commentId))
       throw new APIError(
         400,
-        'Unable to delete comment. Comment ID is missing.'
+        'Unable to delete comment. The provided comment ID is invalid or malformed.'
       );
 
     const deletedComment = await Comment.findOneAndDelete({ _id: commentId });
@@ -110,14 +112,13 @@ const deleteComment = asyncHandler(async (req, res) => {
 
     const deletedLike = await Like.findOneAndDelete({ comment: commentId });
 
-    console.log(deletedLike);
-
     return res
       .status(200)
       .json(
         new APIResponse(200, deletedComment, 'Comment deleted successfully')
       );
   } catch (error) {
+    console.log(`DELETE COMMENT ERROR: ${error?.message}`);
     throw new APIError(500, error?.message || 'Unable to delete the comment.');
   }
 });
@@ -127,11 +128,8 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
 
   try {
-    if (!videoId?.trim())
-      throw new APIError(
-        400,
-        'Video ID is missing. Please provide a valid ID.'
-      );
+    if (!isValidObjectId(videoId))
+      throw new APIError(400, 'The provided video ID is invalid or malformed.');
 
     const videoCommentsAggregationPipeline = [
       {
@@ -209,8 +207,6 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
           new APIResponse(200, {}, 'There are no comments for this video yet.')
         );
 
-    console.log(paginatedVideoComments);
-
     return res
       .status(200)
       .json(
@@ -221,10 +217,10 @@ const fetchVideoComments = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
+    console.log(`VIDEO COMMENTS ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      error?.message ||
-        'An unexpected error occurred while retrieving the comments. Please try again later.'
+      'An unexpected error occurred while retrieving the comments. Please try again later.'
     );
   }
 });

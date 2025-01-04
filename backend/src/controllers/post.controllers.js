@@ -9,40 +9,42 @@ import { pipeline } from 'stream';
 const createPost = asyncHandler(async (req, res) => {
   const { content } = req.body;
 
-  console.log(content);
+  try {
+    if (!content?.trim())
+      throw new APIError(
+        400,
+        'Content cannot be empty. Please provide valid input.'
+      );
 
-  if (!content?.trim())
-    throw new APIError(
-      400,
-      'Content cannot be empty. Please provide valid input.'
-    );
+    const newPost = await Post.create({
+      owner: req.user?._id,
+      content: content.trim(),
+    });
 
-  const newPost = await Post.create({
-    owner: req.user?._id,
-    content: content.trim(),
-  });
+    const createdPost = await Post.findById(newPost._id);
 
-  console.log(newPost);
+    if (!createdPost)
+      throw new APIError(
+        500,
+        'An unexpected error occurred while creating your post. Please try again later or contact support if the issue persists.'
+      );
 
-  const createdPost = await Post.findById(newPost._id);
-
-  console.log(createdPost);
-
-  if (!createdPost)
+    return res
+      .status(200)
+      .json(
+        new APIResponse(
+          200,
+          createdPost,
+          'Your post was successfully created and is now live.'
+        )
+      );
+  } catch (error) {
+    console.log(`CREATE POST ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'An unexpected error occurred while creating your post. Please try again later or contact support if the issue persists.'
+      'An unexpected error occurred while creating your post. Please try again later. If the problem persists, contact support.'
     );
-
-  return res
-    .status(200)
-    .json(
-      new APIResponse(
-        200,
-        createdPost,
-        'Your post was successfully created and is now live.'
-      )
-    );
+  }
 });
 
 const retrieveUserPosts = asyncHandler(async (req, res) => {
@@ -126,10 +128,10 @@ const retrieveUserPosts = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error.message);
+    console.log(`GET USER POST ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'An unexpected error occurred while retrieving the posts. Please try again later.'
+      'An unexpected error occurred while retrieving your posts. Please try again later. If the issue persists, please contact support.'
     );
   }
 });
@@ -138,69 +140,83 @@ const updatePost = asyncHandler(async (req, res) => {
   const { postId } = req.params;
   const { content } = req.body;
 
-  if (!isValidObjectId(postId))
-    throw new APIError(400, 'The provided post ID is invalid or malformed.');
+  try {
+    if (!isValidObjectId(postId))
+      throw new APIError(400, 'The provided post ID is invalid or malformed.');
 
-  if (!content?.trim())
-    throw new APIError(
-      400,
-      'Post content cannot be empty. Please provide some text.'
+    if (!content?.trim())
+      throw new APIError(
+        400,
+        'Post content cannot be empty. Please provide some text.'
+      );
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $set: {
+          content: content?.trim(),
+        },
+      },
+      {
+        new: true,
+      }
     );
 
-  const updatedPost = await Post.findByIdAndUpdate(
-    postId,
-    {
-      $set: {
-        content: content?.trim(),
-      },
-    },
-    {
-      new: true,
-    }
-  );
+    if (!updatePost)
+      throw new APIError(
+        500,
+        'An error occurred while updating the post. Please try again later.'
+      );
 
-  console.log(updatedPost);
-
-  if (!updatePost)
+    return res
+      .status(200)
+      .json(
+        new APIResponse(
+          200,
+          { post: updatedPost },
+          'Your post has been successfully updated.'
+        )
+      );
+  } catch (error) {
+    console.log(`UPDATE POST ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'An error occurred while updating the post. Please try again later.'
+      'An unexpected error occurred while updating your post. Please try again later. If the issue persists, contact support.'
     );
-
-  return res
-    .status(200)
-    .json(
-      new APIResponse(
-        200,
-        { post: updatedPost },
-        'Your post has been successfully updated.'
-      )
-    );
+  }
 });
 
 const deletePost = asyncHandler(async (req, res) => {
   const { postId } = req.params;
 
-  if (!isValidObjectId(postId))
-    throw new APIError(400, 'The provided post ID is invalid or malformed.');
+  try {
+    if (!isValidObjectId(postId))
+      throw new APIError(400, 'The provided post ID is invalid or malformed.');
 
-  const deletedPost = await Post.findOneAndDelete(postId);
+    const deletedPost = await Post.findOneAndDelete(postId);
 
-  if (!deletedPost)
+    if (!deletedPost)
+      throw new APIError(
+        500,
+        'Failed to delete the post. Please try again later or contact support if the issue persists.'
+      );
+
+    return res
+      .status(200)
+      .json(
+        new APIResponse(
+          200,
+          deletedPost,
+          'The post has been successfully deleted.'
+        )
+      );
+  } catch (error) {
+    console.log(`DELETE POST ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'Failed to delete the post. Please try again later or contact support if the issue persists.'
+      'An unexpected error occurred while deleting the post. Please try again later. If the issue persists, please contact support.'
     );
-
-  return res
-    .status(200)
-    .json(
-      new APIResponse(
-        200,
-        deletedPost,
-        'The post has been successfully deleted.'
-      )
-    );
+  }
 });
 
 export { createPost, retrieveUserPosts, updatePost, deletePost };

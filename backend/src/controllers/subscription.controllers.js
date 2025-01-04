@@ -7,58 +7,67 @@ import asyncHandler from '../utils/asyncHandler.js';
 const toggleChannelSubscription = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
 
-  if (!isValidObjectId(channelId))
-    throw new APIError(400, 'The provided channel Id is invalid or malformed.');
+  try {
+    if (!isValidObjectId(channelId))
+      throw new APIError(
+        400,
+        'The provided channel Id is invalid or malformed.'
+      );
 
-  const isSubscribed = await Subscription.findOne({
-    subscriber: req.user?._id,
-    channel: channelId,
-  });
-
-  console.log(isSubscribed);
-
-  if (isSubscribed) {
-    const deletedSubscription = await Subscription.findOneAndDelete({
+    const isSubscribed = await Subscription.findOne({
       subscriber: req.user?._id,
       channel: channelId,
     });
 
-    if (!deletedSubscription)
-      throw new APIError(
-        500,
-        'Failed to remove or unsubscribe. Please try again later or contact support if issue persists.'
-      );
+    if (isSubscribed) {
+      const deletedSubscription = await Subscription.findOneAndDelete({
+        subscriber: req.user?._id,
+        channel: channelId,
+      });
 
-    return res
-      .status(200)
-      .json(
-        new APIResponse(
-          200,
-          deletedSubscription,
-          'You have successfully removed your subscription from this channel.'
-        )
-      );
-  } else {
-    const addedSubscription = await Subscription.create({
-      subscriber: req.user?._id,
-      channel: channelId,
-    });
+      if (!deletedSubscription)
+        throw new APIError(
+          500,
+          'Failed to remove or unsubscribe. Please try again later or contact support if issue persists.'
+        );
 
-    if (!addedSubscription)
-      throw new APIError(
-        500,
-        'Unable to add subscription at this moment. Please try again later, or contact support if the issue persists.'
-      );
+      return res
+        .status(200)
+        .json(
+          new APIResponse(
+            200,
+            deletedSubscription,
+            'You have successfully removed your subscription from this channel.'
+          )
+        );
+    } else {
+      const addedSubscription = await Subscription.create({
+        subscriber: req.user?._id,
+        channel: channelId,
+      });
 
-    return res
-      .status(200)
-      .json(
-        new APIResponse(
-          200,
-          addedSubscription,
-          'You have successfully subscribed to this channel.'
-        )
-      );
+      if (!addedSubscription)
+        throw new APIError(
+          500,
+          'Unable to add subscription at this moment. Please try again later, or contact support if the issue persists.'
+        );
+
+      return res
+        .status(200)
+        .json(
+          new APIResponse(
+            200,
+            addedSubscription,
+            'You have successfully subscribed to this channel.'
+          )
+        );
+    }
+  } catch (error) {
+    console.log(`CHANNEL SUBSCRIPTION ERROR: ${error?.message}`);
+    throw new APIError(
+      500,
+      'An unexpected error occurred while subscribing to the channel. Please try again later. If the issue persists, contact support.'
+    );
   }
 });
 
@@ -138,10 +147,10 @@ const getChannelSubscribers = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error.message);
+    console.log(`CHANNEL SUBSCRIBERS ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'An unexpected error occurred while fetching subscribers. Please try again later.'
+      "An unexpected error occurred while retrieving the channel's subscribers. Please try again later. If the issue persists, contact support."
     );
   }
 });
@@ -229,10 +238,10 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error.message);
+    console.log(`SUBSCRIBED CHANNELS ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'Something went wrong while fetching subscriptions. Please try again later.'
+      'An unexpected error occurred while retrieving your subscribed channels. Please try again later. If the issue persists, contact support.'
     );
   }
 });

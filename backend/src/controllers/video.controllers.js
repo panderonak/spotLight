@@ -13,8 +13,6 @@ import User from '../models/user.models.js';
 const publishVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
 
-  console.log(title);
-
   try {
     if (title?.trim() === '')
       throw new APIError(400, 'Title can not be empty.');
@@ -63,8 +61,6 @@ const publishVideo = asyncHandler(async (req, res) => {
         'Thumbnail upload failed. Please try again later.'
       );
 
-    console.log('uploadedVideo', uploadedVideo);
-
     const createdVideo = await Video.create({
       videoFile: uploadedVideo?.playback_url,
       thumbnail: uploadedThumbnail?.url,
@@ -74,11 +70,7 @@ const publishVideo = asyncHandler(async (req, res) => {
       owner: req.user?._id,
     });
 
-    console.log(createdVideo);
-
     const retrievedVideo = await Video.findById(createdVideo._id);
-
-    console.log('retrievedVideo', retrievedVideo);
 
     if (!retrievedVideo)
       throw new APIError(500, 'Upload Failed. Please try again.');
@@ -92,9 +84,10 @@ const publishVideo = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
+    console.log(`PUBLISH VIDEO ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      error?.message || 'Unable to upload the video. Try again.'
+      'An unexpected error occurred while publishing your video. Please try again later. If the issue persists, contact support.'
     );
   }
 });
@@ -207,8 +200,6 @@ const getVideoById = asyncHandler(async (req, res) => {
         'Video not found. It may have been deleted or the provided ID is incorrect. Please check and try again.'
       );
 
-    console.log(videoDetails);
-
     await Video.findByIdAndUpdate(videoId, {
       $inc: {
         views: 1,
@@ -231,10 +222,10 @@ const getVideoById = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error?.message);
+    console.log(`GET VIDEO BY ID ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'An unexpected error occurred while fetching the video details. Please try again later.'
+      'An unexpected error occurred while retrieving the video details. Please try again later. If the issue persists, contact support.'
     );
   }
 });
@@ -324,11 +315,7 @@ const fetchAllVideos = asyncHandler(async (req, res) => {
         ...basePipeline,
       ];
 
-      console.log(videoPipelineWithQuery);
-
       const queriedVideos = await Video.aggregate(videoPipelineWithQuery);
-
-      console.log(queriedVideos);
 
       if (queriedVideos.length === 0)
         return res
@@ -360,8 +347,6 @@ const fetchAllVideos = asyncHandler(async (req, res) => {
       ...basePipeline,
     ];
 
-    console.log(videoPipeline);
-
     const paginatedVideos = await Video.aggregatePaginate(videoPipeline, {
       page,
       limit,
@@ -388,10 +373,10 @@ const fetchAllVideos = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log('Error:', error.message);
+    console.log(`FETCH ALL VIDEOS ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'An unexpected error occurred while retrieving the video. Please try again later.'
+      'An unexpected error occurred while retrieving the videos. Please try again later. If the problem persists, contact support.'
     );
   }
 });
@@ -462,15 +447,11 @@ const updateVideo = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    console.log('existingVideo', existingVideo);
-    console.log('updatedVideoDetail', updatedVideoDetails);
-
     if (!updatedVideoDetails)
       throw new APIError(400, 'The requested video could not be found.');
 
     const thumbnailDeletionResult =
       await deleteFromCloudinary(currentThumbnail);
-    console.log(thumbnailDeletionResult);
 
     if (!thumbnailDeletionResult)
       throw new APIError(
@@ -487,10 +468,10 @@ const updateVideo = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error.message);
+    console.log(`UPDATE VIDEO ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      'ERROR: An unexpected error occurred while updating the video details. Please try again later.'
+      'An unexpected error occurred while updating the video details. Please try again later. If the issue persists, contact support.'
     );
   }
 });
@@ -518,8 +499,6 @@ const deleteVideo = asyncHandler(async (req, res) => {
     }
 
     const deletedVideo = Video.findOneAndDelete({ _id: videoId });
-
-    console.log('deletedVideo', deletedVideo);
 
     if (!deletedVideo)
       throw new APIError('Video not found or already deleted.');
@@ -560,10 +539,10 @@ const deleteVideo = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
+    console.log(`DELETE VIDEO ERROR: ${error?.message}`);
     throw new APIError(
       500,
-      error?.message ||
-        'An unexpected error occurred while deleting the video. Please try again later.'
+      'An unexpected error occurred while deleting the video. Please try again later. If the issue persists, please contact support.'
     );
   }
 });
@@ -585,8 +564,6 @@ const updatePublishStatus = asyncHandler(async (req, res) => {
       );
 
     const videoPublishStatusFlag = existingVideo.isPublished;
-
-    console.log('videoPublishStatusFlag', videoPublishStatusFlag);
 
     const togglePublishStatus = !videoPublishStatusFlag;
 
@@ -615,11 +592,10 @@ const updatePublishStatus = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error?.message);
+    console.log(`UPDATE PUBLISH STATUS ERROR: ${error?.message}`);
     throw new APIError(
       500,
-
-      'An unexpected error occurred while updating the video publish status. Please try again later.'
+      'An unexpected error occurred while updating the video publish status. Please try again later. If the issue persists, contact support.'
     );
   }
 });
