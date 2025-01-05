@@ -31,9 +31,10 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
 
     next();
   } catch (error) {
+    console.log(`VERIFY JWT ERROR: ${error?.message}`);
     throw new APIError(
       401,
-      error?.message || 'Invalid or expired access token. Please log in again.'
+      'Invalid or expired access token. Please log in again.'
     );
   }
 });
