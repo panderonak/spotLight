@@ -27,6 +27,7 @@ export class AuthService {
     try {
       const { data } = await axios.request(options);
       console.log(data);
+      if (data.success) return this.loginUser({ username, password });
     } catch (error) {
       console.log(error?.message);
     }
@@ -82,5 +83,3 @@ export class AuthService {
 const authService = new AuthService();
 
 export default authService;
-
-// TODO: Refactor this file for better readability and maintainability.
