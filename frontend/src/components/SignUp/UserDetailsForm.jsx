@@ -9,13 +9,13 @@ export default function UserDetailsForm() {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { register, handleSubmit, control } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const handleUserDetails = async (data) => {
     console.log(data);
     setMessage("");
     dispatch(storeRegistrationDetails(data));
-    navigate("/upload-avatar");
+    navigate("/sign-up/avatar");
   };
   return (
     <Container>
