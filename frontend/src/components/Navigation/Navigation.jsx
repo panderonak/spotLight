@@ -1,6 +1,6 @@
 export default function Navigation() {
   return (
-    <body className="h-full bg-white p-4 font-sans text-base text-black">
+    <div className="h-full bg-white p-4 font-sans text-base text-black">
       <html className="h-full">
         <div className="sticky top-0 flex h-full min-h-[860px] max-w-[18rem] flex-col rounded-lg bg-[#070e13] p-4 text-white transition-all duration-500 sm:hover:w-[250px]">
           <div className="mt-4">
@@ -282,6 +282,6 @@ export default function Navigation() {
           </div>
         </div>
       </html>
-    </body>
+    </div>
   );
 }
