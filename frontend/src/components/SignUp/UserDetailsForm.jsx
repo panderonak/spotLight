@@ -78,7 +78,8 @@ export default function UserDetailsForm() {
                   matchPattern: (value) =>
                     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
                       value
-                    ) || "Password should be valid",
+                    ) ||
+                    "Password must be at least 8 characters long, include both uppercase and lowercase letters, and contain at least one number.",
                 })}
               />
 
