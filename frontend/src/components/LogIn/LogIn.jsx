@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../../API/authentication";
 import { authenticateUser } from "../../features/authSlice";
-import { Button, Container } from "../../components";
+import { Input, Button, Container } from "../../components";
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ export default function LogIn() {
           <p>
             Don&apos;t have any account?&nbsp;
             <Link
-              to="/sign-up"
+              to="/auth/sign-up"
               className="font-medium transition-all duration-200 hover:underline"
             >
               Sign Up
