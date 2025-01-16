@@ -1,6 +1,9 @@
 import { forwardRef, useId } from "react";
 
-function Input({ label, type = "text", className = "", ...props }, ref) {
+function Input(
+  { label, type = "text", className = "", placeholder, ...props },
+  ref
+) {
   const Id = useId();
 
   return (
@@ -19,7 +22,7 @@ function Input({ label, type = "text", className = "", ...props }, ref) {
         ref={ref}
         {...props}
         id={Id}
-        placeholder="Enter your email"
+        placeholder={placeholder}
         className={`${className} w-full rounded-xl border-2 border-[#f5f7fa] bg-[#f5f7fa] px-5 py-2.5 text-base font-normal text-black outline-none duration-200 placeholder:font-light placeholder:text-[#7c7b7d] focus:border-black`}
       />
     </div>
