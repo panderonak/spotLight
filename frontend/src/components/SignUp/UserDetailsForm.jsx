@@ -15,7 +15,7 @@ export default function UserDetailsForm() {
     console.log(data);
     setMessage("");
     dispatch(storeRegistrationDetails(data));
-    navigate("/sign-up/avatar");
+    navigate("/auth/sign-up/avatar");
   };
   return (
     <Container>
@@ -24,10 +24,10 @@ export default function UserDetailsForm() {
           <h2 className="text-center text-2xl font-bold leading-tight">
             Create your account
           </h2>
-          <p>
+          <p className="mb-5 text-center text-base text-black/60">
             Already have an account?&nbsp;
             <Link
-              to="/login"
+              to="/auth/sign-in"
               className="font-medium text-primary transition-all duration-200 hover:underline"
             >
               Sign In

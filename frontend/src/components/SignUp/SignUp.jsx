@@ -40,7 +40,7 @@ export default function SignUp() {
         setMessage("Successfully created your account.");
         dispatch(authenticateUser(response.data));
         dispatch(removeRegistrationDetails());
-        navigate("/channel");
+        navigate("/");
       }
     } catch (error) {
       setMessage(error.message);
