@@ -1,4 +1,4 @@
-const userOperationsConfig = {
+const userConfig = {
   updatePasswordPath: String(import.meta.env.VITE_USER_UPDATE_PASSWORD_PATH),
   updateUserPath: String(import.meta.env.VITE_USER_UPDATE_USER_PATH),
   updateAvatarPath: String(import.meta.env.VITE_USER_UPDATE_AVATAR_PATH),
@@ -7,4 +7,4 @@ const userOperationsConfig = {
   watchHistoryPath: String(import.meta.env.VITE_USER_WATCH_HISTORY_PATH),
 };
 
-export default userOperationsConfig;
+export default userConfig;
