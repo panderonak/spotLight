@@ -1,4 +1,4 @@
-const videoOperationsConfig = {
+const videoConfig = {
   videoUploadPath: String(import.meta.env.VITE_VIDEO_UPLOAD_PATH),
   videosPath: String(import.meta.env.VITE_ALL_VIDEOS_PATH),
   updateVideoPath: String(import.meta.env.VITE_UPDATE_VIDEO_PATH),
@@ -6,4 +6,4 @@ const videoOperationsConfig = {
   videoPath: String(import.meta.env.VITE_GET_VIDEO_PATH),
 };
 
-export default videoOperationsConfig;
+export default videoConfig;
