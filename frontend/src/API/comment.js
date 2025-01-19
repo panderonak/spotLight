@@ -5,7 +5,7 @@ import { data } from "autoprefixer";
 export class CommentService {
   constructor() {
     this.method = "POST";
-    this.URL = "/api/v1/users";
+    this.URL = "/api/v1";
     this.headers = {
       accept: "applicaion/json",
       "content-type": "application/json",

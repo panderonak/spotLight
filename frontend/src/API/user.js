@@ -1,12 +1,10 @@
 import axios from "axios";
 import userConfig from "../config/user.config";
-import { data } from "autoprefixer";
-import { use } from "react";
 
 export class UserService {
   constructor() {
     this.method = "POST";
-    this.URL = "/api/v1/users";
+    this.URL = "/api/v1";
     this.headers = {
       accept: "application/json",
       "content-type": " application/json",
