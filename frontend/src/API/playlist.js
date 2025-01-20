@@ -139,3 +139,7 @@ export class PlaylistService {
     }
   }
 }
+
+const playlistService = new PlaylistService();
+
+export default playlistService;
