@@ -14,8 +14,12 @@ export default function UserDetailsForm() {
   const handleUserDetails = async (data) => {
     console.log(data);
     setMessage("");
-    dispatch(storeRegistrationDetails(data));
-    navigate("/auth/sign-up/avatar");
+    try {
+      dispatch(storeRegistrationDetails(data));
+      navigate("/auth/sign-up/avatar");
+    } catch (error) {
+      setMessage(error.message);
+    }
   };
   return (
     <Container>
@@ -33,8 +37,9 @@ export default function UserDetailsForm() {
               Sign In
             </Link>
           </p>
-          {message && <p className="mt-8 text-center">{message}</p>}
-
+          {message && (
+            <p className="my-4 text-center text-red-400">{message}</p>
+          )}
           <form onSubmit={handleSubmit(handleUserDetails)}>
             <div className="space-y-8">
               <Input
@@ -45,14 +50,21 @@ export default function UserDetailsForm() {
                 })}
               />
               <Input
-                label="Username"
+                label="Username*"
                 placeholder="Enter your username"
                 {...register("username", {
+                  minLength: 8,
+                  maxLength: 15,
                   required: true,
-                  validate: {
-                    matchPattern: (value) =>
-                      /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/gim.test(value) ||
-                      "Username must be 1-30 characters long, can only contain letters, numbers, underscores, and periods, and cannot start or end with a period. Consecutive periods are not allowed.",
+                  validate: (value) => {
+                    const isValid =
+                      /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/gim.test(value);
+                    if (!isValid) {
+                      setMessage(
+                        "Username must be 1-15 characters long, can only contain letters, numbers, underscores, and periods, and cannot start or end with a period. Consecutive periods are not allowed."
+                      );
+                    }
+                    return isValid;
                   },
                 })}
               />
@@ -61,12 +73,17 @@ export default function UserDetailsForm() {
                 placeholder="Enter your email"
                 {...register("email", {
                   required: true,
-                  validate: {
-                    matchPattern: (value) =>
+                  validate: (value) => {
+                    const isValid =
                       /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g.test(
                         value
-                      ) ||
-                      "Please provide a valid email address (e.g., example@domain.com).",
+                      );
+                    if (!isValid) {
+                      setMessage(
+                        "Please provide a valid email address (e.g., example@domain.com)."
+                      );
+                    }
+                    return isValid;
                   },
                 })}
               />
@@ -75,11 +92,20 @@ export default function UserDetailsForm() {
                 placeholder="Enter your password"
                 {...register("password", {
                   required: true,
-                  matchPattern: (value) =>
-                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
-                      value
-                    ) ||
-                    "Password must be at least 8 characters long, include both uppercase and lowercase letters, and contain at least one number.",
+                  minLength: 8,
+                  maxLength: 30,
+                  validate: (value) => {
+                    const isValid =
+                      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
+                        value
+                      );
+                    if (!isValid) {
+                      setMessage(
+                        "Password must be at least 8 characters long, include both uppercase and lowercase letters, and contain at least one number."
+                      );
+                    }
+                    return isValid;
+                  },
                 })}
               />
 
