@@ -1,5 +1,4 @@
 const authenticationConfig = {
-  baseURLPath: String(import.meta.env.VITE_API_BASE_URL),
   registerPath: String(import.meta.env.VITE_USERS_REGISTER_PATH),
   loginPath: String(import.meta.env.VITE_USERS_LOGIN_PATH),
   logoutPath: String(import.meta.env.VITE_USERS_LOGOUT_PATH),
