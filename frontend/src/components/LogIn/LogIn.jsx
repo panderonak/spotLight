@@ -31,12 +31,12 @@ export default function LogIn() {
 
   return (
     <Container>
-      <div className="mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10">
+      <div className="mx-auto w-full max-w-lg bg-[#f9fbfc] rounded-xl p-10 shadow-sm drop-shadow-md">
         <div className="mb-1 flex justify-center flex-col gap-3">
           <h2 className="text-center text-2xl font-bold leading-tight">
             Welcome Back
           </h2>
-          <p>
+          <p className="text-center mb-5">
             Don&apos;t have any account?&nbsp;
             <Link
               to="/auth/sign-up"
@@ -49,7 +49,7 @@ export default function LogIn() {
             <p className="text-red-600 mt-8 text-center">{message}</p>
           )}
           <form onSubmit={handleSubmit(handleLogin)}>
-            <div className="space-y-8">
+            <div className="space-y-8 py-4">
               <Input
                 label="Username*"
                 placeholder="Enter your email"
@@ -74,9 +74,11 @@ export default function LogIn() {
                     "Password must be at least 8 characters long, include both uppercase and lowercase letters, and contain at least one number.",
                 })}
               />
-              <Button type="submit" className="w-full">
-                Sign In
-              </Button>
+              <div className="pt-3">
+                <Button type="submit" className="w-full">
+                  Sign In
+                </Button>
+              </div>
             </div>
           </form>
         </div>
