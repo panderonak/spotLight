@@ -23,12 +23,12 @@ export default function UserDetailsForm() {
   };
   return (
     <Container>
-      <div className="mx-auto w-full max-w-lg bg-[#F3F3F4] rounded-xl p-10 border border-black/10">
+      <div className="mx-auto w-full max-w-lg bg-[#f9fbfc] rounded-xl p-10 shadow-sm drop-shadow-md">
         <div className="mb-2 flex justify-center flex-col gap-3">
           <h2 className="text-center text-2xl font-bold leading-tight">
             Create your account
           </h2>
-          <p className="mb-5 text-center text-base text-black/60">
+          <p className="mb-3 text-center text-base text-black/60">
             Already have an account?&nbsp;
             <Link
               to="/auth/sign-in"
@@ -38,7 +38,7 @@ export default function UserDetailsForm() {
             </Link>
           </p>
           {message && (
-            <p className="my-4 text-center text-red-400">{message}</p>
+            <p className="my-3 text-center text-red-400">{message}</p>
           )}
           <form onSubmit={handleSubmit(handleUserDetails)}>
             <div className="space-y-8">
@@ -109,9 +109,11 @@ export default function UserDetailsForm() {
                 })}
               />
 
-              <Button type="submit" className="w-full">
-                Next
-              </Button>
+              <div className="py-3">
+                <Button type="submit" className="w-full">
+                  Next
+                </Button>
+              </div>
             </div>
           </form>
         </div>
