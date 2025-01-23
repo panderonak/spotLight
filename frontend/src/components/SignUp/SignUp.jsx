@@ -51,12 +51,16 @@ export default function SignUp() {
 
   if (avatarPreview)
     return (
-      <div>
-        {message && <p>{message}</p>}
-        <div class="m-10 flex h-20 w-20 items-center justify-center rounded-full bg-slate-200">
+      <div className="flex justify-center items-center flex-col max-w-72 ">
+        {message && (
+          <p className="text-gray-900 font-medium text-center text-wrap text-sm">
+            {message}
+          </p>
+        )}
+        <div class="m-12 flex h-36 w-36 rounded-3xl bg-slate-200 shadow-sm drop-shadow-md">
           <img
             src={avatarPreview}
-            class="rounded-full object-cover shadow-sm drop-shadow-md"
+            class="rounded-3xl object-cover"
             alt="Avatar"
           />
         </div>
@@ -83,7 +87,7 @@ export default function SignUp() {
             </div>
           </Button>
         ) : (
-          <Button type="submit" onClick={createNewAccount}>
+          <Button className="w-full" type="submit" onClick={createNewAccount}>
             Sign Up
           </Button>
         )}
@@ -92,13 +96,13 @@ export default function SignUp() {
 
   return (
     <div
-      class="m-10 flex h-20 w-20 items-center justify-center rounded-full bg-gray-200 shadow-sm drop-shadow-md"
+      class="m-10 flex h-32 w-32 items-center justify-center rounded-3xl bg-slate-200 shadow-sm drop-shadow-md cursor-pointer"
       onClick={() => inputRef.current.click()}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="30"
-        height="30"
+        width="50"
+        height="50"
         viewBox="0 0 24 24"
       >
         <path d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z" />
