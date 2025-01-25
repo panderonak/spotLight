@@ -23,7 +23,7 @@ function Input(
         {...props}
         id={Id}
         placeholder={placeholder}
-        className={`${className} w-full rounded-xl border-2 border-[#efefef] bg-[#FCFCFC] px-5 py-2.5 text-base font-normal text-black outline-none duration-200 placeholder:font-light placeholder:text-[#7c7b7d] focus:border-black`}
+        className={`${className} w-full rounded-xl border border-[#C8C8C8] bg-[#FCFCFC] px-5 py-2.5 text-base font-normal text-black outline-none duration-200 placeholder:font-light placeholder:text-[#7c7b7d] focus:border-black`}
       />
     </div>
   );
