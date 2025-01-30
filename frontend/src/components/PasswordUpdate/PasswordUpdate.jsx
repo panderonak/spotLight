@@ -405,7 +405,7 @@ export default function PasswordUpdate() {
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-end gap-4 p-4">
+              <div className="flex items-center justify-end gap-4 px-8 pb-11 pt-4">
                 <Button
                   onClick={handleCancel}
                   className="border text-base hover:bg-black/5 bg-white !text-black"
@@ -413,7 +413,10 @@ export default function PasswordUpdate() {
                   Cancel
                 </Button>
 
-                <Button type="submit" className="px-4">
+                <Button
+                  type="submit"
+                  className="px-4 hover:bg-[rgba(3,3,3,0.8)]"
+                >
                   Change Password
                 </Button>
               </div>
