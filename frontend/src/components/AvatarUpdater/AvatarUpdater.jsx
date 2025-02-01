@@ -56,7 +56,7 @@ export default function AvatarUpdater() {
         <div className="rounded-lg border">
           <div className="flex flex-wrap">
             <div
-              className="relative m-12 flex h-36 w-36 rounded-3xl bg-slate-200 shadow-sm drop-shadow-md"
+              className="relative my-12 mx-10 flex h-36 w-36 rounded-3xl bg-slate-200 shadow-sm drop-shadow-md"
               onClick={() => inputRef.current.click()}
             >
               <div className="absolute w-full h-full rounded-3xl -z-20">
