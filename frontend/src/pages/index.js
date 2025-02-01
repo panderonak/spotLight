@@ -2,5 +2,16 @@ import SignUpPage from "./SignUpPage/SignUpPage";
 import LogInPage from "./LogInPage/LogInPage";
 import UserDetailsFormPage from "./UserDetailsFormPage/UserDetailsFormPage";
 import HomePage from "./HomePage/HomePage";
+import SettingsPage from "./SettingsPage/SettingsPage";
+import PasswordUpdatePage from "./PasswordUpdatePage/PasswordUpdatePage";
+import ProfileSettingsPage from "./ProfileSettingsPage/ProfileSettingsPage";
 
-export { SignUpPage, LogInPage, UserDetailsFormPage, HomePage };
+export {
+  SignUpPage,
+  LogInPage,
+  UserDetailsFormPage,
+  HomePage,
+  SettingsPage,
+  PasswordUpdatePage,
+  ProfileSettingsPage,
+};
