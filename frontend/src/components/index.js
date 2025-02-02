@@ -10,6 +10,7 @@ import Settings from "./Settings/Settings";
 import AvatarUpdater from "./AvatarUpdater/AvatarUpdater";
 import CoverImageUpdater from "./CoverImageUpdater/CoverImageUpdater";
 import UserDetailsUpdate from "./UserDetailsUpdate/UserDetailsUpdate";
+import VideoUpload from "./VideoUpload/VideoUpload";
 
 export {
   Input,
@@ -24,4 +25,5 @@ export {
   AvatarUpdater,
   CoverImageUpdater,
   UserDetailsUpdate,
+  VideoUpload,
 };
