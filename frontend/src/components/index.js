@@ -12,6 +12,7 @@ import CoverImageUpdater from "./CoverImageUpdater/CoverImageUpdater";
 import UserDetailsUpdate from "./UserDetailsUpdate/UserDetailsUpdate";
 import VideoUpload from "./VideoUpload/VideoUpload";
 import TextArea from "./TextArea/TextArea";
+import VideoUploadModal from "./VideoUploadModal/VideoUploadModal";
 
 export {
   Input,
@@ -28,4 +29,5 @@ export {
   UserDetailsUpdate,
   VideoUpload,
   TextArea,
+  VideoUploadModal,
 };
