@@ -123,7 +123,7 @@ export default function AvatarUpdater() {
               <Button
                 onClick={handleAvatarUpdate}
                 type="submit"
-                className="px-4 hover:bg-[rgba(3,3,3,0.8)]"
+                className="px-4"
               >
                 Save changes
               </Button>
