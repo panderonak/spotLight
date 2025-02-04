@@ -11,6 +11,7 @@ import AvatarUpdater from "./AvatarUpdater/AvatarUpdater";
 import CoverImageUpdater from "./CoverImageUpdater/CoverImageUpdater";
 import UserDetailsUpdate from "./UserDetailsUpdate/UserDetailsUpdate";
 import VideoUpload from "./VideoUpload/VideoUpload";
+import TextArea from "./TextArea/TextArea";
 
 export {
   Input,
@@ -26,4 +27,5 @@ export {
   CoverImageUpdater,
   UserDetailsUpdate,
   VideoUpload,
+  TextArea,
 };
