@@ -11,12 +11,18 @@ export class VideoService {
     };
   }
 
-  async uploadVideo({ videoFile, thumbnail, title, description, owner }) {
+  async uploadVideo({ videoFile, thumbnail, title, description }) {
+    const formData = new FormData();
+    formData.append("videoFile");
+    formData.append("thumbnail");
+    formData.append("title");
+    formData.append("description");
+
     const options = {
       method: "POST",
       url: `${this.URL}${videoConfig.videoUploadPath}`,
       headers: this.headers,
-      data: { videoFile, thumbnail, title, description, owner },
+      data: formData,
     };
 
     try {
