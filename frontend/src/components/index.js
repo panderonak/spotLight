@@ -13,6 +13,7 @@ import UserDetailsUpdate from "./UserDetailsUpdate/UserDetailsUpdate";
 import VideoUpload from "./VideoUpload/VideoUpload";
 import TextArea from "./TextArea/TextArea";
 import VideoUploadModal from "./VideoUploadModal/VideoUploadModal";
+import VideoUploadSuccessModal from "./VideoUploadSuccessModal/VideoUploadSuccessModal";
 
 export {
   Input,
@@ -30,4 +31,5 @@ export {
   VideoUpload,
   TextArea,
   VideoUploadModal,
+  VideoUploadSuccessModal,
 };
