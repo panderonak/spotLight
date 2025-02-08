@@ -3,6 +3,10 @@ import { Button, Input, TextArea } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import videoService from "../../API/video";
+import { showModal } from "../../features/videoUploadSlice";
+import { useDispatch } from "react-redux";
+import { startUploading } from "../../features/videoUploadSlice";
+import { uploadComplete } from "../../features/videoUploadSlice";
 
 export default function VideoUpload() {
   const [message, setMessage] = useState("");
@@ -63,22 +67,35 @@ export default function VideoUpload() {
 
   const { register, handleSubmit } = useForm();
 
+  const dispatch = useDispatch();
+
+  const controller = new AbortController();
+
+  dispatch(startUploading({ controller }));
+
   const handleVideoUpload = async (data) => {
     console.log(data);
     setMessage("");
     setLoading(false);
+    dispatch(startUploading());
     try {
       setLoading(true);
       const videoUploadResponse = await videoService.uploadVideo({
         ...data,
         videoFile,
         thumbnail,
+        signal: controller.signal,
       });
       if (videoUploadResponse.success) {
         setMessage("Your video has been uploaded successfully.");
+        dispatch(uploadComplete());
       }
     } catch (error) {
-      setMessage(error.message);
+      if (error.name === "AbortError") {
+        setMessage("Upload canceled."); // If aborted, show cancel message
+      } else {
+        setMessage(error.message); // Other errors
+      }
     } finally {
       setLoading(false);
     }
