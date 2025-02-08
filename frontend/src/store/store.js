@@ -7,7 +7,7 @@ const store = configureStore({
   reducer: {
     auth: authReducer,
     registration: registrationReducer,
-    videoUploadState: videoUploadReducer,
+    videoUpload: videoUploadReducer,
   },
 });
 
