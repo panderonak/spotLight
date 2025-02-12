@@ -26,7 +26,7 @@ export default function VideoCard({
           {`${formatTimeDuration(duration)}`}
         </span>
       </div>
-      <div className="flex gap-x-2">
+      <div className="flex gap-x-3">
         <div className="mt-1.5 h-10 w-10 shrink-0">
           <img
             src={`${avatar}`}
@@ -35,10 +35,12 @@ export default function VideoCard({
           />
         </div>
         <div className="w-full">
-          <h6 className="mb-1 font-bold text-[#f1f1f1]">{`${title}`}</h6>
-          <p className="mb-0.5 text-sm text-[#aaaaaa]">{`${username}`}</p>
-          <p className="flex text-sm text-[#aaaaaa]">
-            {`${views} Views`} · {`${timeAgoFromTimestamp(createdAt)}`}
+          <h6 className="mb-1 font-semibold text-[#f1f1f1]">{`${title}`}</h6>
+          <p className="mb-0.5 text-sm font-normal text-[#aaaaaa]">{`${username}`}</p>
+          <p className="flex text-sm font-normal text-[#aaaaaa]">
+            {`${views} views`}
+            <span className="font-black px-1"> · </span>
+            {`${timeAgoFromTimestamp(createdAt)}`}
           </p>
         </div>
       </div>
