@@ -19,7 +19,10 @@ export default function InfiniteScrollContainer({
     if (bottomPageIndicatorElement)
       observer.observe(bottomPageIndicatorElement);
 
-    return () => observer.unobserve(bottomPageIndicatorElement);
+    return () => {
+      if (bottomPageIndicatorElement)
+        observer.unobserve(bottomPageIndicatorElement);
+    };
   }, [fetchNextPageVideos, hasNextPage]);
 
   return (
