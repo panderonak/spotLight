@@ -1,51 +1,59 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import videoService from "../API/video";
 
-export const fetchVideos = () =>
-  createAsyncThunk("videos/fetchVideos", async (thunkAPI) => {
+export const fetchVideos = createAsyncThunk(
+  "videos/fetchVideos",
+  async ({ page, userId, sortBy, sortType, query, limit }, thunkAPI) => {
+    const params = { page };
+    if (userId) params.userId = userId;
+    if (sortBy) params.sortBy = sortBy;
+    if (sortType) params.sortType = sortType;
+    if (query) params.query = query;
+    if (limit) params.limit = limit;
+
     try {
-      const response = await videoService.retrieveVideos({}); // TODO: Give the necessary parameters. And understand this file first.
+      const response = await videoService.retrieveVideos(params);
       if (response.success) return response;
+      return thunkAPI.rejectWithValue("Failed to fetch videos");
     } catch (error) {
-      console.error(error);
+      return thunkAPI.rejectWithValue(error.message);
     }
-  });
+  }
+);
 
 const videosSlice = createSlice({
   name: "videos",
   initialState: {
     videos: [],
     currentPage: 1,
-    hasNextPage: true,
-    status: "idle",
+    hasNextPage: false,
+    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
   },
   reducers: {
     resetVideos(state) {
       state.videos = [];
       state.currentPage = 1;
-      state.hasNextPage = true;
+      state.hasNextPage = false;
       state.status = "idle";
       state.error = null;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchVideos.pending, (state) => {
-      state.status = "loading";
-    });
-    builder.addCase(fetchVideos.fulfilled, (state, action) => {
-      state.status = "succeeded";
-      // Append new videos to the existing list
-      state.videos = [...state.videos, ...action.payload.videos];
-      // Increment page for the next call
-      state.currentPage += 1;
-      // Update hasNextPage based on API response
-      state.hasNextPage = action.payload.hasNextPage;
-    });
-    builder.addCase(fetchVideos.rejected, (state, action) => {
-      state.status = "failed";
-      state.error = action.error.message;
-    });
+    builder
+      .addCase(fetchVideos.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchVideos.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.videos = [...state.videos, ...action.payload.data.docs];
+        state.currentPage += 1;
+        state.hasNextPage = action.payload.data.hasNextPage;
+      })
+      .addCase(fetchVideos.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
   },
 });
 
