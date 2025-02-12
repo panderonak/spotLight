@@ -17,7 +17,7 @@ export default function LogIn() {
     setMessage("");
     try {
       const authSession = await authService.loginUser(data);
-      if (authSession.success) {
+      if (authSession?.success) {
         const authenticatedUserDetails = await authService.getCurrentUser();
         if (authenticatedUserDetails) {
           dispatch(authenticateUser(authenticatedUserDetails));
