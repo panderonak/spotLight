@@ -237,7 +237,7 @@ const fetchAllVideos = asyncHandler(async (req, res) => {
     query,
     sortBy = 'title',
     sortType = 'asc',
-    userId,
+    userId = req.user?._id,
   } = req.query;
 
   try {
@@ -347,10 +347,15 @@ const fetchAllVideos = asyncHandler(async (req, res) => {
       ...basePipeline,
     ];
 
+    console.log(videoPipeline);
+
     const paginatedVideos = await Video.aggregatePaginate(videoPipeline, {
       page,
       limit,
     });
+
+    console.log(paginatedVideos);
+    console.log(req.user?._id);
 
     if (paginatedVideos.docs.length === 0)
       return res
@@ -366,11 +371,7 @@ const fetchAllVideos = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(
-        new APIResponse(
-          200,
-          paginatedVideos.docs,
-          'Videos retrieved successfully.'
-        )
+        new APIResponse(200, paginatedVideos, 'Videos retrieved successfully.')
       );
   } catch (error) {
     console.log(`FETCH ALL VIDEOS ERROR: ${error?.message}`);
