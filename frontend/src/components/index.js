@@ -15,6 +15,7 @@ import TextArea from "./TextArea/TextArea";
 import VideoUploadModal from "./VideoUploadModal/VideoUploadModal";
 import VideoUploadSuccessModal from "./VideoUploadSuccessModal/VideoUploadSuccessModal";
 import VideoCardSkeleton from "./VideoCardSkeleton/VideoCardSkeleton";
+import VideoDetailView from "./VideoDetailView/VideoDetailView";
 
 export {
   Input,
@@ -34,4 +35,5 @@ export {
   VideoUploadModal,
   VideoUploadSuccessModal,
   VideoCardSkeleton,
+  VideoDetailView,
 };
