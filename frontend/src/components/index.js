@@ -17,6 +17,7 @@ import VideoUploadSuccessModal from "./VideoUploadSuccessModal/VideoUploadSucces
 import VideoCardSkeleton from "./VideoCardSkeleton/VideoCardSkeleton";
 import VideoDetailView from "./VideoDetailView/VideoDetailView";
 import CommentSection from "./CommentSection/CommentSection";
+import CommentCard from "./CommentCard/CommentCard";
 
 export {
   Input,
@@ -38,4 +39,5 @@ export {
   VideoCardSkeleton,
   VideoDetailView,
   CommentSection,
+  CommentCard,
 };
