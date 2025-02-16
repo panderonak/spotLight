@@ -1,4 +1,9 @@
+import { useLocation } from "react-router-dom";
+import { CommentSection } from "../../components";
+
 export default function VideoDetailView() {
+  const location = useLocation();
+  const videoId = location.state?.videoId;
   return (
     <section class="w-full bg-black pb-[70px] sm:ml-[70px] sm:pb-0">
       <div class="flex w-full flex-wrap gap-4 p-4 lg:flex-nowrap">
@@ -102,6 +107,7 @@ export default function VideoDetailView() {
                 odit labore eum tempora eos doloribus molestias.
               </p>
             </div>
+            <CommentSection />
           </div>
         </div>
       </div>
