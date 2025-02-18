@@ -4,6 +4,7 @@ import {
 } from "../../dateTimeUtils/timeFunctions";
 
 export default function VideoCard({
+  videoId,
   thumbnail,
   title,
   duration,
@@ -12,6 +13,7 @@ export default function VideoCard({
   avatar,
   createdAt,
 }) {
+  navigate("/video", { state: { videoId } }); // TODO: Fix this line.
   return (
     <div className="w-full">
       <div className="relative mb-2 w-full pt-[56%]">
