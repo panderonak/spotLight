@@ -1,6 +1,5 @@
 import axios from "axios";
 import commentConfig from "../config/comment.config";
-import { data } from "autoprefixer";
 
 export class CommentService {
   constructor() {
@@ -32,11 +31,12 @@ export class CommentService {
     }
   }
 
-  async fetchVideoComments({ videoId }) {
+  async fetchVideoComments(params) {
     const options = {
       method: "GET",
       url: `${this.URL}${commentConfig.videoCommentsPath}/${videoId}`,
       headers: this.headers,
+      params: params,
     };
 
     try {
