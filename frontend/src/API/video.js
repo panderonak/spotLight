@@ -36,17 +36,24 @@ export class VideoService {
     }
   }
 
-  async retrieveVideos() {
+  async retrieveVideos(params) {
     const options = {
       method: "GET",
       url: `${this.URL}${videoConfig.videosPath}`,
       headers: this.headers,
+      params: params,
     };
+    console.log(params);
+    console.log(options.url);
 
     try {
+      console.log(params);
       const { data } = await axios.request(options);
+      console.log("I am here videos.");
+      console.log(data);
       if (data.success) {
         console.log("Success");
+        console.log(data);
         return data;
       }
     } catch (error) {
