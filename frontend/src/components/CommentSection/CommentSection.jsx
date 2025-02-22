@@ -27,7 +27,9 @@ export default function CommentSection({ children }) {
             />
           </div>
         </div>
-        <CommentCard />
+        {comments?.map((comment) => (
+          <CommentCard />
+        ))}
       </div>
     </form>
   );
