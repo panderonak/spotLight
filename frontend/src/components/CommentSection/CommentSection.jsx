@@ -28,7 +28,7 @@ export default function CommentSection({ children }) {
           </div>
         </div>
         {comments?.map((comment) => (
-          <CommentCard />
+          <CommentCard key={comment._id} content={comment.content} />
         ))}
       </div>
     </form>
