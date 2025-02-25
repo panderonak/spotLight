@@ -35,7 +35,7 @@ export const updateComment = createAsyncThunk(
   }
 );
 
-export const removeComment = createAsyncThunk(
+export const deleteComment = createAsyncThunk(
   "removeComment",
   async ({ commentId }) => {
     try {
