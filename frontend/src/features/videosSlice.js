@@ -1,6 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import videoService from "../API/video";
 
+const initialState = {
+  videos: [],
+  currentPage: 1,
+  hasNextPage: false,
+  status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: null,
+};
+
 export const fetchVideos = createAsyncThunk(
   "videos/fetchVideos",
   async ({ page, userId, sortBy, sortType, query, limit }, thunkAPI) => {
@@ -23,13 +31,7 @@ export const fetchVideos = createAsyncThunk(
 
 const videosSlice = createSlice({
   name: "videos",
-  initialState: {
-    videos: [],
-    currentPage: 1,
-    hasNextPage: false,
-    status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
-    error: null,
-  },
+  initialState,
   reducers: {
     resetVideos(state) {
       state.videos = [];
