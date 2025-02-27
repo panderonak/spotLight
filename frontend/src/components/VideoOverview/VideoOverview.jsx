@@ -95,7 +95,6 @@ export default function VideoOverview({
       <div className="h-5 overflow-hidden bg-red-400 group-focus:h-auto">
         <p className="text-sm">{description}</p>
       </div>
-      <CommentSection />
     </div>
   );
 }
