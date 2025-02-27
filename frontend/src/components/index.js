@@ -18,6 +18,7 @@ import VideoCardSkeleton from "./VideoCardSkeleton/VideoCardSkeleton";
 import VideoDetailView from "./VideoDetailView/VideoDetailView";
 import CommentSection from "./CommentSection/CommentSection";
 import CommentCard from "./CommentCard/CommentCard";
+import CommentInput from "./CommentInput/CommentInput";
 
 export {
   Input,
@@ -40,4 +41,5 @@ export {
   VideoDetailView,
   CommentSection,
   CommentCard,
+  CommentInput,
 };
