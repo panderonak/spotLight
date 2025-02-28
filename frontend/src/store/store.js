@@ -4,6 +4,7 @@ import registrationReducer from "../features/registrationSlice";
 import videoUploadReducer from "../features/videoUploadSlice";
 import videosReducer from "../features/videosSlice";
 import commentReducer from "../features/commentSlice";
+import videoActionsReducer from "../features/videoActionsSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     videoUpload: videoUploadReducer,
     videos: videosReducer,
     comment: commentReducer,
+    videoActions: videoActionsReducer,
   },
 });
 
