@@ -19,6 +19,7 @@ import VideoDetailView from "./VideoDetailView/VideoDetailView";
 import CommentSection from "./CommentSection/CommentSection";
 import CommentCard from "./CommentCard/CommentCard";
 import CommentInput from "./CommentInput/CommentInput";
+import VideoOverview from "./VideoOverview/VideoOverview";
 
 export {
   Input,
@@ -42,4 +43,5 @@ export {
   CommentSection,
   CommentCard,
   CommentInput,
+  VideoOverview,
 };
