@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 export default function InfiniteScrollContainer({
   children,
-  fetchNextPageVideos,
+  fetchNextPage,
   hasNextPage,
 }) {
   const bottomPageIndicatorRef = useRef(null);
@@ -12,7 +12,7 @@ export default function InfiniteScrollContainer({
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
       if (target.isIntersecting && hasNextPage) {
-        fetchNextPageVideos();
+        fetchNextPage();
       }
     });
 
@@ -23,7 +23,7 @@ export default function InfiniteScrollContainer({
       if (bottomPageIndicatorElement)
         observer.unobserve(bottomPageIndicatorElement);
     };
-  }, [fetchNextPageVideos, hasNextPage]);
+  }, [fetchNextPage, hasNextPage]);
 
   return (
     <>
