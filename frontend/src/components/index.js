@@ -16,7 +16,7 @@ import VideoUploadModal from "./VideoUploadModal/VideoUploadModal";
 import VideoUploadSuccessModal from "./VideoUploadSuccessModal/VideoUploadSuccessModal";
 import VideoCardSkeleton from "./VideoCardSkeleton/VideoCardSkeleton";
 import VideoDetailView from "./VideoDetailView/VideoDetailView";
-import "./InfiniteScrollContainer/InfiniteScrollContainer";
+import InfiniteScrollContainer from "./InfiniteScrollContainer/InfiniteScrollContainer";
 import CommentSection from "./CommentSection/CommentSection";
 import CommentCard from "./CommentCard/CommentCard";
 import CommentInput from "./CommentInput/CommentInput";
