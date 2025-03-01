@@ -31,21 +31,31 @@ export default function VideoOverview({
                 data-like={`${likes}`}
                 data-like-alt={`${likes}`}
               >
-                <span className="inline-block w-5 group-focus/btn:text-[#ae7aff]">
+                <span className="inline-block w-5">
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="18"
+                    className={`${
+                      likedByCurrentUser ? "fill-white" : "fill-black"
+                    } cursor-pointer`}
                     viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    className="lucide lucide-thumbs-up"
                   >
-                    <path d="M7 10v12" />
-                    <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g
+                      id="SVGRepo_tracerCarrier"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path
+                          stroke="#fff"
+                          stroke-width="1.2"
+                          d="M2 9h3v12H2a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1zm5.293-1.293l6.4-6.4a.5.5 0 0 1 .654-.047l.853.64a1.5 1.5 0 0 1 .553 1.57L14.6 8H21a2 2 0 0 1 2 2v2.104a2 2 0 0 1-.15.762l-3.095 7.515a1 1 0 0 1-.925.619H8a1 1 0 0 1-1-1V8.414a1 1 0 0 1 .293-.707z"
+                        ></path>
+                      </g>
+                    </g>
                   </svg>
                 </span>
               </button>
