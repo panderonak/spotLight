@@ -36,6 +36,7 @@ export default function VideoDetailView() {
             </div>
           </div>
           <VideoOverview
+            videoId={videoId}
             title={video?.title}
             description={video?.description}
             views={video?.views}
