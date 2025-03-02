@@ -86,6 +86,6 @@ export class LikeService {
   }
 }
 
-const likeServide = new LikeService();
+const likeService = new LikeService();
 
-export default likeServide;
+export default likeService;
