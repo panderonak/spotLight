@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, VideoCard } from "../../components";
 import { fetchVideos } from "../../features/videosSlice";
 import { useCallback, useEffect } from "react";
-import InfiniteScrollContainer from "../../components/InfiniteScrollContainer/InfiniteScrollContainer";
+import { InfiniteScrollContainer } from "../../components/index";
 import authService from "../../API/authentication";
 
 export default function HomePage() {
@@ -40,8 +40,8 @@ export default function HomePage() {
             <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4 p-4">
               {videos?.map((video) => (
                 <VideoCard
-                  key={video.id}
-                  videoId={video.id}
+                  key={video._id}
+                  videoId={video._id}
                   thumbnail={video.thumbnail}
                   title={video.title}
                   duration={video.duration}
