@@ -1,4 +1,8 @@
+import likeService from "../../API/like";
+import subscriptionService from "../../API/subscription";
+
 export default function VideoOverview({
+  videoId,
   title,
   description,
   views,
@@ -10,6 +14,47 @@ export default function VideoOverview({
   isSubscribed,
   likedByCurrentUser,
 }) {
+  const [hasSubscription, setHasSubscription] = useState(isSubscribed);
+  const [hasUserLiked, setHasUserLiked] = useState(likedByCurrentUser);
+
+  const toggleLikeStatus = async ({ videoId }) => {
+    try {
+      const response = await likeService.toggleVideoLike({ videoId });
+
+      if (response?.success) {
+        console.log("You have successfully liked the video!");
+        setHasUserLiked((prev) => !prev);
+      } else {
+        console.log("Failed to like the video. Please try again.");
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while liking the video:",
+        error?.message || error
+      );
+    }
+  };
+
+  const toggleSubscriptionStatus = async ({ channelId }) => {
+    try {
+      const response = await subscriptionService.toggleChannelSubscription({
+        channelId,
+      });
+
+      if (response?.success) {
+        console.log("You have successfully subscribed to the channel!");
+        setHasSubscription((prev) => !prev);
+      } else {
+        console.log("Failed to subscribe to the channel. Please try again.");
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while subscribing to the channel:",
+        error?.message || error
+      );
+    }
+  };
+
   return (
     <div
       className="group mb-4 w-full rounded-lg border bg-red-400 p-4 duration-200 hover:bg-white/5 focus:bg-white/5"
@@ -31,10 +76,13 @@ export default function VideoOverview({
                 data-like={`${likes}`}
                 data-like-alt={`${likes}`}
               >
-                <span className="inline-block w-5">
+                <span
+                  onClick={() => toggleLikeStatus({ videoId })}
+                  className="inline-block w-5"
+                >
                   <svg
                     className={`${
-                      likedByCurrentUser ? "fill-white" : "fill-black"
+                      hasUserLiked ? "fill-white" : "fill-black"
                     } cursor-pointer`}
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
@@ -96,14 +144,15 @@ export default function VideoOverview({
         </div>
         <div className="block">
           <button
+            onClick={() => toggleSubscriptionStatus({ channelId: owner?._id })}
             className={`
               ${
-                isSubscribed
+                hasSubscription
                   ? "bg-[#f1f1f1] hover:bg-[#f1f1f1]/80 text-[#272727]"
                   : "bg-[#272727] hover:bg-[#272727]/80 text-[#f1f1f1]"
               } group/btn w-full rounded-3xl  px-4 py-2 text-center text-sm font-medium transition-all duration-200 ease-in-out  sm:w-auto cursor-pointer`}
           >
-            <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
+            <span>{hasSubscription ? "Subscribed" : "Subscribe"}</span>
           </button>
         </div>
       </div>
