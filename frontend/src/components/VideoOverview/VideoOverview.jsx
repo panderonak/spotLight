@@ -95,9 +95,15 @@ export default function VideoOverview({
           </div>
         </div>
         <div className="block">
-          <button className="group/btn w-full rounded-3xl bg-[#f1f1f1] px-4 py-2 text-center text-sm font-medium transition-all duration-200 ease-in-out hover:bg-white/80 sm:w-auto">
-            <span className="group-focus/btn:hidden">Subscribe</span>
-            <span className="hidden group-focus/btn:block">Subscribed</span>
+          <button
+            className={`
+              ${
+                isSubscribed
+                  ? "bg-[#f1f1f1] hover:bg-[#f1f1f1]/80 text-[#272727]"
+                  : "bg-[#272727] hover:bg-[#272727]/80 text-[#f1f1f1]"
+              } group/btn w-full rounded-3xl  px-4 py-2 text-center text-sm font-medium transition-all duration-200 ease-in-out  sm:w-auto cursor-pointer`}
+          >
+            <span>{isSubscribed ? "Subscribed" : "Subscribe"}</span>
           </button>
         </div>
       </div>
