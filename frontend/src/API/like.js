@@ -28,11 +28,12 @@ export class LikeService {
     }
   }
 
-  async toggleVideoLike() {
+  async toggleVideoLike({ videoId }) {
     const options = {
       method: this.method,
       url: `${this.URL}${likeConfig.videoLikeTogglePath}`,
       headers: this.headers,
+      params: { videoId },
     };
     try {
       const { data } = await axios.request(options);
@@ -46,11 +47,12 @@ export class LikeService {
     }
   }
 
-  async toggleCommentLike() {
+  async toggleCommentLike({ commentId }) {
     const options = {
       method: this.method,
       url: `${this.URL}${likeConfig.commentLikeTogglePath}`,
       headers: this.headers,
+      params: { commentId },
     };
     try {
       const { data } = await axios.request(options);
@@ -64,11 +66,12 @@ export class LikeService {
     }
   }
 
-  async togglePostLike() {
+  async togglePostLike({ postId }) {
     const options = {
       method: this.method,
       url: `${this.URL}${likeConfig.postLikeTogglePath}`,
       headers: this.headers,
+      params: { postId },
     };
     try {
       const { data } = await axios.request(options);
