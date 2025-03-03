@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { createNewComment, fetchComments } from "../../features/commentSlice";
 
 export default function CommentSection({ videoId }) {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const userData = useSelector((state) => state.userInfo);
   console.log(userData.user);
   const [page, setPage] = useState(1);
@@ -23,8 +23,26 @@ export default function CommentSection({ videoId }) {
     }
   }, [page, isLoading, hasNextPage, dispatch, videoId]);
 
-  const handleCommentSubmit = (data) => {
-    const response = createNewComment();
+  const handleCommentSubmit = async (data) => {
+    const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const [error, setError] = useState(null);
+    try {
+      setIsSubmittingComment(true);
+      const action = await dispatch(createNewComment({ videoId, ...data }));
+
+      if (action.type === "createNewComment/fulfilled") {
+        reset();
+      } else {
+        setError("Failed to post comment. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error creating comment:", error.message);
+      setError(
+        "An error occurred while posting the comment. Please try again."
+      );
+    } finally {
+      setIsSubmittingComment(false);
+    }
   };
 
   return (
@@ -43,6 +61,8 @@ export default function CommentSection({ videoId }) {
             <CommentInput
               {...register("content", { required: true })}
               placeholder="Add a comment..."
+              commentSubmit={handleCommentSubmit}
+              isCommentSubmitting={isSubmittingComment}
             />
           </div>
         </div>
