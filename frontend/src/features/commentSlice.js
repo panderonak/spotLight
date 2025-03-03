@@ -9,7 +9,7 @@ const initialState = {
 };
 
 export const createNewComment = createAsyncThunk(
-  "createNewComment",
+  "comments/createNewComment",
   async ({ videoId, content }) => {
     try {
       const response = await commentService.commentPost({ videoId, content });
