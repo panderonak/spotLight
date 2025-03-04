@@ -71,7 +71,16 @@ export default function CommentSection({ videoId }) {
           hasNextPage={hasMoreComments}
         >
           {comments?.map((comment) => (
-            <CommentCard key={comment?._id} content={comment?.content} />
+            <CommentCard
+              key={comment?._id}
+              identifier={comment?._id}
+              author={comment?.owner?.username}
+              authorAvatar={comment?.owner?.avatar}
+              content={comment?.content}
+              createdAt={comment?.createdAt}
+              likeCount={comment?.likes}
+              isLikedByUser={comment?.likedByUser}
+            />
           ))}
         </InfiniteScrollContainer>
       </div>
