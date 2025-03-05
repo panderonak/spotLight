@@ -25,7 +25,6 @@ export default function CommentSection({ videoId }) {
 
   const handleCommentSubmit = async (data) => {
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-    const [error, setError] = useState(null);
     try {
       setIsSubmittingComment(true);
       const action = await dispatch(createNewComment({ videoId, ...data }));
@@ -33,13 +32,10 @@ export default function CommentSection({ videoId }) {
       if (action.type === "createNewComment/fulfilled") {
         reset();
       } else {
-        setError("Failed to post comment. Please try again.");
+        console.log("Failed to post comment. Please try again.");
       }
     } catch (error) {
       console.error("Error creating comment:", error.message);
-      setError(
-        "An error occurred while posting the comment. Please try again."
-      );
     } finally {
       setIsSubmittingComment(false);
     }
@@ -73,7 +69,7 @@ export default function CommentSection({ videoId }) {
           {comments?.map((comment) => (
             <CommentCard
               key={comment?._id}
-              identifier={comment?._id}
+              commentId={comment?._id}
               author={comment?.owner?.username}
               authorAvatar={comment?.owner?.avatar}
               content={comment?.content}
