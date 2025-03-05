@@ -21,7 +21,7 @@ export const createNewComment = createAsyncThunk(
 );
 
 export const updateComment = createAsyncThunk(
-  "updateComment",
+  "comments/updateComment",
   async ({ commentId, updatedComment }) => {
     try {
       const response = await commentService.editComment({
@@ -36,7 +36,7 @@ export const updateComment = createAsyncThunk(
 );
 
 export const deleteComment = createAsyncThunk(
-  "removeComment",
+  "comments/removeComment",
   async ({ commentId }) => {
     try {
       const response = await commentService.deleteComment({
