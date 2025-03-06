@@ -14,6 +14,7 @@ export default function CommentCard({
 }) {
   const [totalLikes, setTotalLikes] = useState(likeCount);
   const [hasUserLiked, setHasUserLiked] = useState(isLikedByUser);
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
 
   const toggleLikeStatus = async ({ commentId }) => {
     try {
@@ -55,12 +56,16 @@ export default function CommentCard({
       }
     } catch (error) {
       console.error("Error deleting comment:", error.message || error);
+    } finally {
+      setIsActionModalOpen(false);
     }
   };
 
-  const updateCommentContent = async ({ commentId }) => {
+  const updateCommentContent = async ({ commentId, updatedComment }) => {
     try {
-      const action = await dispatch(updateComment({ commentId }));
+      const action = await dispatch(
+        updateComment({ commentId, updatedComment })
+      );
       if (action?.type === "updateComment/fulfilled") {
         console.log("Successfully updated the comment.");
       } else if (action?.type === "updateComment/rejected") {
@@ -70,30 +75,35 @@ export default function CommentCard({
       }
     } catch (error) {
       console.error("Error updating comment:", error.message || error);
+    } finally {
+      setIsActionModalOpen(false);
     }
   };
 
   return (
-    <div class="relative">
-      <div class="w-full bg-[#0f0f0f] p-4">
-        <div class="flex items-start gap-x-4">
-          <div class="mt-2 h-11 w-11 shrink-0">
+    <div className="relative">
+      <div className="w-full bg-[#0f0f0f] p-4">
+        <div className="flex items-start gap-x-4">
+          <div className="mt-2 h-11 w-11 shrink-0">
             <img
               src={`${authorAvatar}`}
               alt="User profile"
-              class="h-full w-full rounded-full object-cover"
+              className="h-full w-full rounded-full object-cover"
             />
           </div>
 
-          <div class="flex-1">
-            <p class="flex items-center justify-between text-sm font-semibold text-gray-200">
+          <div className="flex-1">
+            <p className="flex items-center justify-between text-sm font-semibold text-gray-200">
               <span>
                 {`@${author}`} ·
-                <span class="text-xs text-[#aaaaaa]">{`${timeAgoFromTimestamp(
+                <span className="text-xs text-[#aaaaaa]">{`${timeAgoFromTimestamp(
                   createdAt
                 )} ago`}</span>
               </span>
-              <button class="cursor-pointer pr-3">
+              <button
+                onClick={() => setIsActionModalOpen((prev) => !prev)}
+                className="cursor-pointer pr-3"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -111,15 +121,19 @@ export default function CommentCard({
                 </svg>
               </button>
             </p>
-            <p class="mt-3 pr-5 text-sm font-normal text-white">{content}</p>
+            <p className="mt-3 pr-5 text-sm font-normal text-white">
+              {content}
+            </p>
 
-            <div class="flex w-full items-center p-0.5 pt-2 transition-all ease-in-out">
+            <div className="flex w-full items-center p-0.5 pt-2 transition-all ease-in-out">
               <span
-                onClick={() => toggleLikeStatus({ commentId: commentId })}
-                class="cursor-pointer rounded-full p-2 transition duration-200 ease-in-out hover:bg-[rgba(229,229,229,0.25)]"
+                onClick={() => toggleLikeStatus({ commentId })}
+                className="cursor-pointer rounded-full p-2 transition duration-200 ease-in-out hover:bg-[rgba(229,229,229,0.25)]"
               >
                 <svg
-                  className={`${hasUserLiked ? "fill-white" : "fill-black"} `}
+                  classNameName={`${
+                    hasUserLiked ? "fill-white" : "fill-black"
+                  } `}
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
                   height="18"
@@ -134,20 +148,29 @@ export default function CommentCard({
                   <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
                 </svg>
               </span>
-              <span class="text-xs text-[rgb(170,170,170)]">{`${totalLikes}`}</span>
+              <span className="text-xs text-[rgb(170,170,170)]">{`${totalLikes}`}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="absolute top-10 right-10 w-36 rounded-xl bg-[rgba(40,40,40)] px-2 py-3 shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-10">
+      <div
+        className={`${
+          isActionModalOpen
+            ? "block opacity-100 transform scale-100"
+            : "opacity-0 transform scale-95 pointer-events-none"
+        }
+        absolute top-10 right-10 w-36 rounded-xl bg-[rgba(40,40,40)] px-2 py-3 shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-10
+        transition-all ease-in-out duration-200`}
+      >
         <ul>
           <li>
             <button
-              class="mb-1.5 flex w-full cursor-pointer items-center rounded-md p-2 text-white hover:bg-[rgb(83,83,83)]"
+              onClick={() => removeComment({ commentId })}
+              className="mb-1.5 flex w-full cursor-pointer items-center rounded-md p-2 text-white hover:bg-[rgb(83,83,83)]"
               aria-label="Delete post"
             >
-              <span class="mr-2 text-sm font-normal">Delete</span>
+              <span className="mr-2 text-sm font-normal">Delete</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -167,10 +190,13 @@ export default function CommentCard({
               </svg>
             </button>
             <button
-              class="flex w-full cursor-pointer items-center rounded-md p-2 text-white hover:bg-[rgb(83,83,83)]"
+              onClick={() =>
+                updateCommentContent({ commentId, updatedComment })
+              }
+              className="flex w-full cursor-pointer items-center rounded-md p-2 text-white hover:bg-[rgb(83,83,83)]"
               aria-label="Update post"
             >
-              <span class="mr-2 text-sm font-normal">Update</span>
+              <span className="mr-2 text-sm font-normal">Update</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
