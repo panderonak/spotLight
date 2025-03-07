@@ -21,6 +21,7 @@ import CommentSection from "./CommentSection/CommentSection";
 import CommentCard from "./CommentCard/CommentCard";
 import CommentInput from "./CommentInput/CommentInput";
 import VideoOverview from "./VideoOverview/VideoOverview";
+import CommentPanel from "./CommentPanel/CommentPanel";
 
 export {
   Input,
@@ -46,4 +47,5 @@ export {
   CommentCard,
   CommentInput,
   VideoOverview,
+  CommentPanel,
 };
