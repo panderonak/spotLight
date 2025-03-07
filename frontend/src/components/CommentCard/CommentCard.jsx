@@ -1,7 +1,9 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import likeService from "../../API/like";
 import { timeAgoFromTimestamp } from "../../dateTimeUtils/timeFunctions";
 import { deleteComment, updateComment } from "../../features/commentSlice";
+import { CommentPanel } from "../../components/index";
+import { useState } from "react";
 
 export default function CommentCard({
   commentId,
@@ -15,6 +17,7 @@ export default function CommentCard({
   const [totalLikes, setTotalLikes] = useState(likeCount);
   const [hasUserLiked, setHasUserLiked] = useState(isLikedByUser);
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
 
   const toggleLikeStatus = async ({ commentId }) => {
     try {
@@ -77,8 +80,16 @@ export default function CommentCard({
       console.error("Error updating comment:", error.message || error);
     } finally {
       setIsActionModalOpen(false);
+      setIsEditable(false);
     }
   };
+
+  const { isUpdateActionTriggered, updatedComment } = useSelector(
+    (state) => state.comment
+  );
+
+  if (isUpdateActionTriggered)
+    updateCommentContent({ commentId, updatedComment });
 
   return (
     <div className="relative">
@@ -122,7 +133,7 @@ export default function CommentCard({
               </button>
             </p>
             <p className="mt-3 pr-5 text-sm font-normal text-white">
-              {content}
+              <CommentPanel commentText={content} editable={isEditable} />
             </p>
 
             <div className="flex w-full items-center p-0.5 pt-2 transition-all ease-in-out">
@@ -190,9 +201,7 @@ export default function CommentCard({
               </svg>
             </button>
             <button
-              onClick={() =>
-                updateCommentContent({ commentId, updatedComment })
-              }
+              onClick={() => setIsEditable(true)}
               className="flex w-full cursor-pointer items-center rounded-md p-2 text-white hover:bg-[rgb(83,83,83)]"
               aria-label="Update post"
             >
