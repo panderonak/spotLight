@@ -6,6 +6,9 @@ const initialState = {
   comments: [],
   totalCommentCount: null,
   hasMoreComments: false,
+  isUpdateActionTriggered: false,
+  updatedComment: null,
+  editable: false,
 };
 
 export const createNewComment = createAsyncThunk(
@@ -76,6 +79,17 @@ const commentSlice = createSlice({
       state.totalCommentCount = null;
       state.hasMoreComments = false;
     },
+    startUpdating(state, action) {
+      const { modifiedComment, buttonClicked } = action.payload;
+      state.isUpdateActionTriggered = buttonClicked;
+      state.updatedComment = modifiedComment;
+      state.editable = true;
+    },
+    completeUpdating(state) {
+      state.isUpdateActionTriggered = false;
+      state.updatedComment = null;
+      state.editable = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchComments.pending, (state) => {
@@ -100,7 +114,8 @@ const commentSlice = createSlice({
   },
 });
 
-export const { cleanUpComments } = commentSlice.actions;
+export const { cleanUpComments, startUpdating, completeUpdating } =
+  commentSlice.actions;
 
 const commentReducer = commentSlice.reducer;
 
