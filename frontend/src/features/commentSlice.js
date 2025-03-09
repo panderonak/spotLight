@@ -80,8 +80,8 @@ const commentSlice = createSlice({
       state.hasMoreComments = false;
     },
     startUpdating(state, action) {
-      const { modifiedComment, buttonClicked } = action.payload;
-      state.isUpdateActionTriggered = buttonClicked;
+      const { modifiedComment } = action.payload;
+      state.isUpdateActionTriggered = true;
       state.updatedComment = modifiedComment;
       state.editable = true;
     },
