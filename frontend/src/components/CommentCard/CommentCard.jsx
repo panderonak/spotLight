@@ -80,7 +80,6 @@ export default function CommentCard({
       console.error("Error updating comment:", error.message || error);
     } finally {
       setIsActionModalOpen(false);
-      setIsEditable(false);
     }
   };
 
@@ -88,8 +87,10 @@ export default function CommentCard({
     (state) => state.comment
   );
 
-  if (isUpdateActionTriggered)
+  if (isUpdateActionTriggered) {
+    setIsEditable(false);
     updateCommentContent({ commentId, updatedComment });
+  }
 
   return (
     <div className="relative">
@@ -133,7 +134,7 @@ export default function CommentCard({
               </button>
             </p>
             <p className="mt-3 pr-5 text-sm font-normal text-white">
-              <CommentPanel commentText={content} editable={isEditable} />
+              <CommentPanel commentText={content} canEdit={isEditable} />
             </p>
 
             <div className="flex w-full items-center p-0.5 pt-2 transition-all ease-in-out">
