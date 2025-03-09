@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { completeUpdating, startUpdating } from "../../features/commentSlice";
 import { Button } from "../../components/index";
 
-export default function CommentPanel({ commentText }) {
+export default function CommentPanel({ commentText, canEdit }) {
   const dispatch = useDispatch();
-  const [isEditable, setIsEditable] = useState(false);
+  const [isEditable, setIsEditable] = useState(canEdit);
   const [comment, setComment] = useState(commentText);
 
   const { editable } = useSelector((state) => state.comment);
