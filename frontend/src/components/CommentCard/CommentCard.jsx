@@ -99,7 +99,7 @@ export default function CommentCard({
           <div className="mt-2 h-11 w-11 shrink-0">
             <img
               src={`${authorAvatar}`}
-              alt="User profile"
+              alt={`${author} profile`}
               className="h-full w-full rounded-full object-cover"
             />
           </div>
