@@ -106,6 +106,25 @@ export class UserService {
       console.error(error);
     }
   }
+
+  async getChannelProfile({ username }) {
+    const options = {
+      method: `GET`,
+      url: `${this.URL}${userConfig.channelProfile}`,
+      headers: this.headers,
+      params: { username },
+    };
+
+    try {
+      const { data } = await axios.request(options);
+      if (data.success) {
+        console.log("Success");
+        return data;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 const userService = new UserService();
