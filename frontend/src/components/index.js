@@ -22,6 +22,10 @@ import CommentCard from "./CommentCard/CommentCard";
 import CommentInput from "./CommentInput/CommentInput";
 import VideoOverview from "./VideoOverview/VideoOverview";
 import CommentPanel from "./CommentPanel/CommentPanel";
+import ChannelProfileCard from "./ChannelProfileCard/ChannelProfileCard";
+import ChannelProfileList from "./ChannelProfileList/ChannelProfileList";
+import ChannelNavigation from "./ChannelNavigation/ChannelNavigation";
+import ChannelBanner from "./ChannelBanner/ChannelBanner";
 
 export {
   Input,
@@ -48,4 +52,8 @@ export {
   CommentInput,
   VideoOverview,
   CommentPanel,
+  ChannelProfileCard,
+  ChannelProfileList,
+  ChannelNavigation,
+  ChannelBanner,
 };
