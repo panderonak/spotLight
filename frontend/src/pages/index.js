@@ -5,6 +5,7 @@ import HomePage from "./HomePage/HomePage";
 import SettingsPage from "./SettingsPage/SettingsPage";
 import PasswordUpdatePage from "./PasswordUpdatePage/PasswordUpdatePage";
 import ProfileSettingsPage from "./ProfileSettingsPage/ProfileSettingsPage";
+import ChannelProfile from "./ChannelProfile/ChannelProfile";
 
 export {
   SignUpPage,
@@ -14,4 +15,5 @@ export {
   SettingsPage,
   PasswordUpdatePage,
   ProfileSettingsPage,
+  ChannelProfile,
 };
