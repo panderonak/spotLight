@@ -5,6 +5,7 @@ import videoUploadReducer from "../features/videoUploadSlice";
 import videosReducer from "../features/videosSlice";
 import commentReducer from "../features/commentSlice";
 import videoActionsReducer from "../features/videoActionsSlice";
+import channelProfileReducer from "../features/channelProfileStateSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     videos: videosReducer,
     comment: commentReducer,
     videoActions: videoActionsReducer,
+    channelProfile: channelProfileReducer,
   },
 });
 
