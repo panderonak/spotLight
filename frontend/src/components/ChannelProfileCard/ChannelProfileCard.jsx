@@ -1,23 +1,6 @@
 import userService from "../../API/user";
 
-export default function ChannelProfileCard({ username }) {
-  const [channelProfile, setChannelProfile] = useState({});
-
-  useEffect(() => {
-    const subscription = async () => {
-      try {
-        const channelInfo = await userService.getChannelProfile({ username });
-        if (channelInfo.success) setChannelProfile(channelInfo?.data);
-      } catch (error) {
-        console.error(error?.message);
-      }
-    };
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [third]);
-
+export default function ChannelProfileCard({ channelProfile }) {
   const [hasSubscription, setHasSubscription] = useState(
     channelProfile?.isSubscribed
   );
