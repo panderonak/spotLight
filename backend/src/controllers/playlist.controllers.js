@@ -61,6 +61,8 @@ const fetchUserPlaylist = asyncHandler(async (req, res) => {
         'User ID cannot be empty. Please provide a valid User ID.'
       );
 
+    if (!userId) userId = req.user?._id;
+
     const userPlaylists = await Playlist.aggregate([
       {
         $match: {
