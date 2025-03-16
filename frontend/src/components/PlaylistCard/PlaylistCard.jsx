@@ -1,11 +1,16 @@
-export default function PlaylistCard() {
+export default function PlaylistCard({
+  playlistTitle,
+  playlistDescription,
+  thumbnailImage,
+  totalVideos,
+}) {
   return (
     <div class="w-full p-0.5">
       <div class="relative mb-2 w-full pt-[56%]">
         <div class="absolute inset-0">
           <img
-            src="https://images.pexels.com/photos/7161184/pexels-photo-7161184.jpeg?auto=compress&cs=tinysrgb&w=1200&lazy=load"
-            alt="Lorem"
+            src={`${thumbnailImage}`}
+            alt={`${playlistTitle} Playlist`}
             class="h-full w-full rounded-2xl object-cover"
           />
           <div class="absolute inset-x-0 bottom-0">
@@ -30,7 +35,7 @@ export default function PlaylistCard() {
                       <path d="m16 12 5 3-5 3v-6Z" />
                     </svg>
                     <span class="inline-block text-sm font-semibold">
-                      3 videos
+                      {`${totalVideos} videos`}
                     </span>
                   </span>
                 </p>
@@ -39,10 +44,8 @@ export default function PlaylistCard() {
           </div>
         </div>
       </div>
-      <h6 class="mb-1 font-semibold text-white">Lorem, ipsum.</h6>
-      <p class="flex text-sm text-gray-200">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore, atque?
-      </p>
+      <h6 class="mb-1 font-semibold text-white">{playlistTitle}</h6>
+      <p class="flex text-sm text-gray-200">{playlistDescription}</p>
     </div>
   );
 }
