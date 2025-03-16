@@ -6,6 +6,7 @@ import SettingsPage from "./SettingsPage/SettingsPage";
 import PasswordUpdatePage from "./PasswordUpdatePage/PasswordUpdatePage";
 import ProfileSettingsPage from "./ProfileSettingsPage/ProfileSettingsPage";
 import ChannelProfile from "./ChannelProfile/ChannelProfile";
+import PlaylistPage from "./PlaylistPage/PlaylistPage";
 
 export {
   SignUpPage,
@@ -16,4 +17,5 @@ export {
   PasswordUpdatePage,
   ProfileSettingsPage,
   ChannelProfile,
+  PlaylistPage,
 };
