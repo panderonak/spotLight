@@ -67,10 +67,10 @@ export class PlaylistService {
     }
   }
 
-  async getUserPlaylist({ userId }) {
+  async getUserPlaylist() {
     const options = {
       method: "GET",
-      url: `${this.URL}${playlistConfig.userPlaylistFetchPath}/${userId}`,
+      url: `${this.URL}${playlistConfig.userPlaylistFetchPath}`,
       headers: this.headers,
     };
     try {
