@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import PlaylistCard from "../../components/PlaylistCard/PlaylistCard";
 import {
   clearPlaylists,
@@ -5,33 +7,36 @@ import {
 } from "../../features/playlistsSlice";
 
 export default function PlaylistPage() {
+  const dispatch = useDispatch();
   const { playlistCollection, status } = useSelector(
-    (state) => state.channelProfile
+    (state) => state.playlists
   );
 
+  // Fetch playlists only when necessary
   useEffect(() => {
-    try {
-      if (playlistCollection.length === 0 && status === "idle") {
-        dispatch(retrievePlaylist());
-      }
-    } catch (error) {
-      console.error(error?.message);
+    if (playlistCollection.length === 0 && status === "idle") {
+      dispatch(retrievePlaylist());
     }
+  }, [playlistCollection.length, status, dispatch]);
 
+  // Cleanup on unmount
+  useEffect(() => {
     return () => {
       dispatch(clearPlaylists());
     };
-  });
+  }, [dispatch]);
 
   return (
-    <div class="grid gap-4 bg-black pt-2 sm:grid-cols-[repeat(auto-fit,_minmax(400px,_1fr))]">
+    <div className="grid gap-4 bg-black pt-2 sm:grid-cols-[repeat(auto-fit,minmax(400px,1fr))]">
       {playlistCollection.map((playlist) => (
-        <PlaylistCard
-          playlistTitle={playlist?.name}
-          playlistDescription={playlist?.description}
-          thumbnailImage={playlist?.videos?.thumbnail}
-          totalVideos={playlist?.videosCount}
-        />
+        <div key={playlist._id}>
+          <PlaylistCard
+            playlistTitle={playlist?.name}
+            playlistDescription={playlist?.description}
+            thumbnailImage={playlist?.videos[0]?.thumbnail}
+            totalVideos={playlist?.videosCount}
+          />
+        </div>
       ))}
     </div>
   );
