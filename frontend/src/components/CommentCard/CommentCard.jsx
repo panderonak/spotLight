@@ -118,8 +118,8 @@ export default function CommentCard({
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -140,18 +140,20 @@ export default function CommentCard({
             <div className="flex w-full items-center p-0.5 pt-2 transition-all ease-in-out">
               <span
                 onClick={() => toggleLikeStatus({ commentId })}
-                className="cursor-pointer rounded-full p-2 transition duration-200 ease-in-out hover:bg-[rgba(229,229,229,0.25)]"
+                className="inline-flex justify-center items-center cursor-pointer rounded-full p-2 transition duration-200 ease-in-out hover:bg-[rgba(229,229,229,0.25)]"
               >
                 <svg
-                  classNameName={`${
-                    hasUserLiked ? "fill-white" : "fill-black"
+                  className={`${
+                    hasUserLiked
+                      ? "fill-red-400 stroke-red-400"
+                      : "fill-black stroke-white"
                   } `}
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
                   height="18"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#f1f1f1"
+                  stroke="none"
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
