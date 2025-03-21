@@ -101,4 +101,6 @@ const postSlice = createSlice({
 
 export const { cleanUpPosts } = postSlice.actions;
 
-export default postSlice.reducer;
+const postReducer = postSlice.reducer;
+
+export default postReducer;
