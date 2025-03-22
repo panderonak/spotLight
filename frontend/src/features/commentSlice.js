@@ -4,67 +4,68 @@ import commentService from "../API/comment";
 const initialState = {
   isLoading: false,
   comments: [],
-  totalCommentCount: null,
+  totalCommentCount: 0,
   hasMoreComments: false,
   isUpdateActionTriggered: false,
   updatedComment: null,
   editable: false,
+  error: null,
 };
 
 export const createNewComment = createAsyncThunk(
   "comments/createNewComment",
-  async ({ videoId, content }) => {
+  async ({ videoId, content }, { rejectWithValue }) => {
     try {
       const response = await commentService.commentPost({ videoId, content });
-      if (response.success) return response;
+      if (response.success) return response.data;
+      return rejectWithValue("Failed to create comment");
     } catch (error) {
-      return error.message;
+      return rejectWithValue(error.message);
     }
   }
 );
 
 export const updateComment = createAsyncThunk(
   "comments/updateComment",
-  async ({ commentId, updatedComment }) => {
+  async ({ commentId, updatedComment }, { rejectWithValue }) => {
     try {
       const response = await commentService.editComment({
         commentId,
         updatedComment,
       });
-      if (response.success) return response;
+      if (response.success) return response.data.content;
+      return rejectWithValue("Failed to update comment");
     } catch (error) {
-      return error.message;
+      return rejectWithValue(error.message);
     }
   }
 );
 
 export const deleteComment = createAsyncThunk(
   "comments/removeComment",
-  async ({ commentId }) => {
+  async ({ commentId }, { rejectWithValue }) => {
     try {
-      const response = await commentService.deleteComment({
-        commentId,
-      });
-      if (response.success) return response;
+      const response = await commentService.deleteComment({ commentId });
+      if (response.success) return { commentId }; // Return commentId for filtering
+      return rejectWithValue("Failed to delete comment");
     } catch (error) {
-      return error.message;
+      return rejectWithValue(error.message);
     }
   }
 );
 
 export const fetchComments = createAsyncThunk(
   "fetchComments",
-  async ({ videoId, page, limit }) => {
+  async ({ videoId, page, limit }, { rejectWithValue }) => {
     const params = { videoId };
-
     if (page) params.page = page;
     if (limit) params.limit = limit;
-
     try {
-      const response = commentService.fetchVideoComments(params);
-      if (response.success) return response;
+      const response = await commentService.fetchVideoComments(params);
+      if (response.success) return response.data;
+      return rejectWithValue("Failed to fetch comments");
     } catch (error) {
-      return error.message;
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -76,8 +77,9 @@ const commentSlice = createSlice({
     cleanUpComments(state) {
       state.isLoading = false;
       state.comments = [];
-      state.totalCommentCount = null;
+      state.totalCommentCount = 0;
       state.hasMoreComments = false;
+      state.error = null;
     },
     startUpdating(state, action) {
       const { modifiedComment } = action.payload;
@@ -94,6 +96,7 @@ const commentSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchComments.pending, (state) => {
       state.isLoading = true;
+      state.error = null;
     });
     builder.addCase(fetchComments.fulfilled, (state, action) => {
       state.isLoading = false;
@@ -101,15 +104,42 @@ const commentSlice = createSlice({
       state.totalCommentCount = action.payload.totalDocs;
       state.hasMoreComments = action.payload.hasNextPage;
     });
+    builder.addCase(fetchComments.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
     builder.addCase(createNewComment.fulfilled, (state, action) => {
       state.comments.unshift(action.payload);
-      state.totalCommentCount++;
+      state.totalCommentCount += 1;
     });
-    builder.addCase(deleteComment.fulfilled, (state, action) => {
-      state.comments = state.comments.filter(
-        (comment) => comment._id !== action.payload.commentId
+    builder.addCase(createNewComment.rejected, (state, action) => {
+      state.error = action.payload;
+    });
+
+    builder.addCase(updateComment.fulfilled, (state, action) => {
+      const updatedComment = action.payload;
+      const index = state.comments.findIndex(
+        (comment) => comment._id === updatedComment._id
       );
-      state.totalCommentCount--;
+      if (index !== -1) {
+        state.comments[index].content = updatedComment; // Update the comment in the array
+      }
+    });
+    builder.addCase(updateComment.rejected, (state, action) => {
+      state.error = action.payload;
+    });
+
+    // Delete comment
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
+      const { commentId } = action.payload;
+      state.comments = state.comments.filter(
+        (comment) => comment._id !== commentId
+      );
+      state.totalCommentCount -= 1;
+    });
+    builder.addCase(deleteComment.rejected, (state, action) => {
+      state.error = action.payload;
     });
   },
 });
@@ -117,6 +147,4 @@ const commentSlice = createSlice({
 export const { cleanUpComments, startUpdating, completeUpdating } =
   commentSlice.actions;
 
-const commentReducer = commentSlice.reducer;
-
-export default commentReducer;
+export default commentSlice.reducer;
