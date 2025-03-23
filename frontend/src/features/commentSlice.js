@@ -147,4 +147,6 @@ const commentSlice = createSlice({
 export const { cleanUpComments, startUpdating, completeUpdating } =
   commentSlice.actions;
 
-export default commentSlice.reducer;
+const commentReducer = commentSlice.reducer;
+
+export default commentReducer;
