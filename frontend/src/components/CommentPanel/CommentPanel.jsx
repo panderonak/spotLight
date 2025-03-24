@@ -16,7 +16,7 @@ export default function CommentPanel({
   }, [canEdit, commentText]);
 
   const handleCommentChange = (evt) => {
-    setComment(evt.target.value);
+    setComment(evt.target.value); // Handel comment changes
   };
 
   return (
