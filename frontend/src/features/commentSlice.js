@@ -46,7 +46,7 @@ export const deleteComment = createAsyncThunk(
   async ({ commentId }, { rejectWithValue }) => {
     try {
       const response = await commentService.deleteComment({ commentId });
-      if (response.success) return { commentId }; // Return commentId for filtering
+      if (response.success) return { commentId }; // Return commentId for filtering the comments
       return rejectWithValue("Failed to delete comment");
     } catch (error) {
       return rejectWithValue(error.message);
