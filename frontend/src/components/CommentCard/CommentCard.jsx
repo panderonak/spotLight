@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useCallback } from "react";
 import { deleteComment, updateComment } from "../../features/commentSlice";
 import likeService from "../../API/like";
@@ -6,6 +6,7 @@ import { timeAgoFromTimestamp } from "../../dateTimeUtils/timeFunctions";
 import { CommentPanel } from "../../components/index";
 
 const CommentCard = ({
+  owner,
   commentId,
   author,
   authorAvatar,
@@ -37,7 +38,7 @@ const CommentCard = ({
   const removeComment = useCallback(async () => {
     try {
       const action = await dispatch(deleteComment({ commentId }));
-      if (action.type === "removeComment/fulfilled") {
+      if (deleteComment.fulfilled.match(action)) {
         console.log("Comment deleted successfully.");
       } else {
         console.error("Failed to delete comment.");
@@ -55,7 +56,7 @@ const CommentCard = ({
         const action = await dispatch(
           updateComment({ commentId, updatedComment })
         );
-        if (action.type === "updateComment/fulfilled") {
+        if (updateComment.fulfilled.match(action)) {
           console.log("Comment updated successfully.");
           setIsEditable(false);
         } else {
@@ -73,6 +74,8 @@ const CommentCard = ({
   const handleCancel = useCallback(() => {
     setIsEditable(false);
   }, []);
+
+  const { userInfo } = useSelector((state) => state.auth);
 
   return (
     <div className="relative">
@@ -93,27 +96,30 @@ const CommentCard = ({
                   {timeAgoFromTimestamp(createdAt)} ago
                 </span>
               </span>
-              <button
-                onClick={() => setIsActionModalOpen((prev) => !prev)}
-                className="cursor-pointer pr-3"
-                aria-label="More actions"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+
+              {userInfo.user._id === owner && (
+                <button
+                  onClick={() => setIsActionModalOpen((prev) => !prev)}
+                  className="cursor-pointer pr-3"
+                  aria-label="More actions"
                 >
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="12" cy="5" r="1" />
-                  <circle cx="12" cy="19" r="1" />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="12" cy="5" r="1" />
+                    <circle cx="12" cy="19" r="1" />
+                  </svg>
+                </button>
+              )}
             </p>
             <p className="mt-3 pr-5 text-sm font-normal text-white">
               <CommentPanel
