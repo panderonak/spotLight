@@ -7,7 +7,6 @@ import {
   createRoutesFromElements,
   Route,
   RouterProvider,
-  Outlet,
 } from "react-router-dom";
 import store from "./store/store";
 
